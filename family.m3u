@@ -1,9 +1,9 @@
 #EXTM3U
-#EXTINF:-1 tvg-name="Big Buck Bunny" tvg-logo="__BASE__/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Big Buck Bunny · 720p
+#EXTINF:-1 tvg-name="Big Buck Bunny" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Big Buck Bunny · 720p
 https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_720p_h264.mov
-#EXTINF:-1 tvg-name="Caminandes Llama Drama" tvg-logo="__BASE__/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 1 · Llama Drama
+#EXTINF:-1 tvg-name="Caminandes Llama Drama" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 1 · Llama Drama
 https://archive.org/download/Caminandes1LlamaDrama/01_llama_drama_1080p.mp4
-#EXTINF:-1 tvg-name="Caminandes Gran Dillama" tvg-logo="__BASE__/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 2 · Gran Dillama
+#EXTINF:-1 tvg-name="Caminandes Gran Dillama" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 2 · Gran Dillama
 https://archive.org/download/Caminandes2GranDillama/02_gran_dillama_1080p.mp4
-#EXTINF:-1 tvg-name="Caminandes Llamigos" tvg-logo="__BASE__/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 3 · Llamigos
+#EXTINF:-1 tvg-name="Caminandes Llamigos" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 3 · Llamigos
 https://archive.org/download/CaminandesLlamigos/Caminandes_%20Llamigos-1080p.mp4
