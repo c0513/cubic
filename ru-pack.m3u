@@ -1,0 +1,75 @@
+#EXTM3U x-tvg-url="https://iptv-org.github.io/epg/guides/ru/tv.yandex.ru.epg.xml"
+
+# =========================================
+# MAX ROAD TV · RUSSIAN PACK
+# Public / broadcaster-hosted streams first
+# =========================================
+
+# --- 🇷🇺 ТВ · ОСНОВНЫЕ ---
+#EXTINF:-1 tvg-id="Russia1.ru" tvg-name="Россия 1" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-tv.svg" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",Россия 1 · HD
+https://stream.smotrim.ru/hls2/russia_hd/playlist_6.m3u8
+
+#EXTINF:-1 tvg-id="RussiaK.ru" tvg-name="Россия-К" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-tv.svg" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",Россия-К · HD
+https://stream.smotrim.ru/hls2/russia_k/playlist_5.m3u8
+
+#EXTINF:-1 tvg-id="360.ru" tvg-name="360°" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-tv.svg" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",360° · 1080p
+https://cdn-evacoder-tv.facecast.io/evacoder_hls_hi/CkxfR1xNUAJwTgtXTBZTAJli/index.m3u8
+
+#EXTINF:-1 tvg-id="Afontovo.ru" tvg-name="Афонтово" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-tv.svg" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",Афонтово · HD
+https://stream.afontovo.ru/hd.m3u8
+
+# --- 📰 НОВОСТИ / ДЕЛО ---
+#EXTINF:-1 tvg-id="Russia24.ru" tvg-name="Россия 24" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-news.svg" group-title="🇷🇺 ТВ · НОВОСТИ",Россия 24 · 720p
+https://stream.smotrim.ru/hls2/russia24nl_smotrim/playlist_5.m3u8
+
+#EXTINF:-1 tvg-id="RBKTV.ru" tvg-name="РБК-ТВ" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-news.svg" group-title="🇷🇺 ТВ · НОВОСТИ",РБК-ТВ
+https://online-video.rbc.ru/online/rbctv_576p/index.m3u8
+
+#EXTINF:-1 tvg-id="Smotrim100Fakty.ru" tvg-name="Смотрим 100% Факты" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-news.svg" group-title="🇷🇺 ТВ · НОВОСТИ",Смотрим · 100% Факты
+https://stream.smotrim.ru/hls/fasttv06/playlist_3.m3u8
+
+# --- 🎬 ЛАЙФ / КЛАССИКА ---
+#EXTINF:-1 tvg-id="Smotrim100Klassika.ru" tvg-name="Смотрим 100% Классика" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-tv.svg" group-title="🇷🇺 ТВ · ЛАЙФ",Смотрим · 100% Классика
+https://stream.smotrim.ru/hls/fasttv03/playlist_3.m3u8
+
+#EXTINF:-1 tvg-id="Smotrim100Muzhskoe.ru" tvg-name="Смотрим 100% Мужское" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-tv.svg" group-title="🇷🇺 ТВ · ЛАЙФ",Смотрим · 100% Мужское
+https://stream.smotrim.ru/hls/fasttv02/playlist_3.m3u8
+
+#EXTINF:-1 tvg-id="2x2.ru" tvg-name="2x2" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-fun.svg" group-title="🇷🇺 ТВ · ЛАЙФ",2x2 · анимация / гейминг
+https://bl.rutube.ru/livestream/392b4686b770bae2da6bf5ac4574add5/index.m3u8?e=2068731801&s=tenr-yHXUv1wibfka78s2A&scheme=https
+
+# --- 🦖 ДАНЧЕЗАВР · LIVE ---
+#EXTINF:-1 tvg-id="Carousel.ru" tvg-name="Карусель" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-kids.svg" group-title="🇷🇺 🦖 ДАНЧЕЗАВР · LIVE",Карусель
+https://stream.smotrim.ru/hls2/karusel/playlist_3.m3u8
+
+#EXTINF:-1 tvg-id="Smotrim100Detskoe.ru" tvg-name="Смотрим 100% Детское" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-kids.svg" group-title="🇷🇺 🦖 ДАНЧЕЗАВР · LIVE",Смотрим · 100% Детское
+https://stream.smotrim.ru/hls/fasttv05/playlist_3.m3u8
+
+#EXTINF:-1 tvg-id="RUTVKids.ru" tvg-name="RU.TV Kids" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-kids.svg" group-title="🇷🇺 🦖 ДАНЧЕЗАВР · LIVE",RU.TV Kids · 720p
+https://rutvkids.ru/live/efir/index.m3u8
+
+# --- 🚗 РУССКОЕ РАДИО · ROAD ---
+#EXTINF:-1 radio="true" tvg-name="Radio Record" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Radio Record · основной
+https://radiorecord.hostingradio.ru/rr_main96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Record Russian Hits" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Record · Russian Hits
+https://radiorecord.hostingradio.ru/russianhits64.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Record 00-х" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Record · 00-х
+https://radiorecord.hostingradio.ru/200096.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Record 90-х" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Record · Супердискотека 90-х
+https://radiorecord.hostingradio.ru/sd9096.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Record Russian Gold" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Record · Russian Gold
+https://radiorecord.hostingradio.ru/russiangold96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Record Rock" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Record · Rock
+https://radiorecord.hostingradio.ru/rock96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Наше Радио" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",НАШЕ Радио · 128 kbps
+https://nashe1.hostingradio.ru:80/nashe-128.mp3
+
+# --- 📶 РОССИЯ · СЛАБАЯ СЕТЬ ---
+#EXTINF:-1 radio="true" tvg-name="Record Russian Hits Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="🇷🇺 LOW NET",Record · Russian Hits · 64 kbps
+https://radiorecord.hostingradio.ru/russianhits64.aacp
