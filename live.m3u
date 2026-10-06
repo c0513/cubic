@@ -1,0 +1,13 @@
+#EXTM3U
+#EXTINF:-1 tvg-name="Red Bull TV" tvg-logo="__BASE__/logos/redbull.svg" group-title="⚡ ACTION",Red Bull TV · 1080p
+https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8
+#EXTINF:-1 tvg-name="Bloomberg TV" tvg-logo="__BASE__/logos/bloomberg.svg" group-title="💼 MARKETS",Bloomberg TV US · 720p
+https://bloomberg.com/media-manifest/streams/us.m3u8
+#EXTINF:-1 tvg-name="France 24 English" tvg-logo="__BASE__/logos/world.svg" group-title="🌍 WORLD LIVE",France 24 English · 720p
+https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_2300.m3u8
+#EXTINF:-1 tvg-name="DW English" tvg-logo="__BASE__/logos/world.svg" group-title="🌍 WORLD LIVE",DW English · 1080p
+https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8
+#EXTINF:-1 tvg-name="NHK World-Japan" tvg-logo="__BASE__/logos/world.svg" group-title="🌍 WORLD LIVE",NHK World-Japan · 1080p
+https://masterpl.hls.nhkworld.jp/hls/w/live/smarttv.m3u8
+#EXTINF:-1 tvg-name="Reuters TV" tvg-logo="__BASE__/logos/world.svg" group-title="🌍 WORLD LIVE",Reuters TV · Europe
+https://reuters-reutersnow-1-eu.rakuten.wurl.tv/playlist.m3u8
