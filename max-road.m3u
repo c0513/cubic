@@ -3,62 +3,63 @@
 # =========================
 # MAX ROAD TV · A051
 # One link for APTV
+# RU travel routing: try DIRECT first; use VPN group only when needed.
 # =========================
 
 # --- ⚡ ACTION ---
-#EXTINF:-1 tvg-name="Red Bull TV" tvg-logo="https://a051-road-tv.onrender.com/logos/redbull.svg" group-title="⚡ ACTION",Red Bull TV · 1080p
+#EXTINF:-1 tvg-name="Red Bull TV" tvg-logo="https://a051-road-tv.onrender.com/logos/redbull.svg" group-title="🇷🇺 БЕЗ VPN · ACTION",Red Bull TV · 1080p
 https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8
 
 # --- 💼 MARKETS / TECH ---
-#EXTINF:-1 tvg-name="Bloomberg TV" tvg-logo="https://a051-road-tv.onrender.com/logos/bloomberg.svg" group-title="💼 MARKETS",Bloomberg TV US · 720p
+#EXTINF:-1 tvg-name="Bloomberg TV" tvg-logo="https://a051-road-tv.onrender.com/logos/bloomberg.svg" group-title="🌍 VPN / ЕСЛИ НЕ ОТКРЫЛОСЬ",Bloomberg TV US · 720p
 https://bloomberg.com/media-manifest/streams/us.m3u8
 
 # --- 🌍 WORLD LIVE ---
-#EXTINF:-1 tvg-name="France 24 English" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🌍 WORLD LIVE",France 24 English · 720p
+#EXTINF:-1 tvg-name="France 24 English" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🌍 VPN / ЕСЛИ НЕ ОТКРЫЛОСЬ",France 24 English · 720p
 https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_2300.m3u8
-#EXTINF:-1 tvg-name="DW English" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🌍 WORLD LIVE",DW English · 1080p
+#EXTINF:-1 tvg-name="DW English" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🌍 VPN / ЕСЛИ НЕ ОТКРЫЛОСЬ",DW English · 1080p
 https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8
-#EXTINF:-1 tvg-name="NHK World-Japan" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🌍 WORLD LIVE",NHK World-Japan · 1080p
+#EXTINF:-1 tvg-name="NHK World-Japan" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🇷🇺 БЕЗ VPN · WORLD",NHK World-Japan · 1080p
 https://masterpl.hls.nhkworld.jp/hls/w/live/smarttv.m3u8
-#EXTINF:-1 tvg-name="Reuters TV" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🌍 WORLD LIVE",Reuters TV · Europe
+#EXTINF:-1 tvg-name="Reuters TV" tvg-logo="https://a051-road-tv.onrender.com/logos/world.svg" group-title="🌍 VPN / ЕСЛИ НЕ ОТКРЫЛОСЬ",Reuters TV · Europe
 https://reuters-reutersnow-1-eu.rakuten.wurl.tv/playlist.m3u8
-#EXTINF:-1 tvg-name="NASA TV Public" tvg-logo="https://a051-road-tv.onrender.com/logos/space.svg" group-title="🌍 WORLD LIVE",NASA TV Public · bonus
+#EXTINF:-1 tvg-name="NASA TV Public" tvg-logo="https://a051-road-tv.onrender.com/logos/space.svg" group-title="🇷🇺 БЕЗ VPN · WORLD",NASA TV Public · bonus
 https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master_2000.m3u8
 
 # --- 🛣️ ROAD MODE ---
-#EXTINF:-1 radio="true" tvg-name="The Trip" tvg-logo="https://a051-road-tv.onrender.com/logos/road.svg" group-title="🛣️ ROAD MODE",The Trip · driving
+#EXTINF:-1 radio="true" tvg-name="The Trip" tvg-logo="https://a051-road-tv.onrender.com/logos/road.svg" group-title="🇷🇺 БЕЗ VPN · ROAD",The Trip · driving
 https://ice5.somafm.com/thetrip-128-aac
-#EXTINF:-1 radio="true" tvg-name="Groove Salad" tvg-logo="https://a051-road-tv.onrender.com/logos/road.svg" group-title="🛣️ ROAD MODE",Groove Salad · chill
+#EXTINF:-1 radio="true" tvg-name="Groove Salad" tvg-logo="https://a051-road-tv.onrender.com/logos/road.svg" group-title="🇷🇺 БЕЗ VPN · ROAD",Groove Salad · chill
 https://ice5.somafm.com/groovesalad-128-aac
-#EXTINF:-1 radio="true" tvg-name="Secret Agent" tvg-logo="https://a051-road-tv.onrender.com/logos/road.svg" group-title="🛣️ ROAD MODE",Secret Agent · night drive
+#EXTINF:-1 radio="true" tvg-name="Secret Agent" tvg-logo="https://a051-road-tv.onrender.com/logos/road.svg" group-title="🇷🇺 БЕЗ VPN · ROAD",Secret Agent · night drive
 https://ice5.somafm.com/secretagent-128-aac
 
 # --- 💻 GEEK MODE ---
-#EXTINF:-1 radio="true" tvg-name="DEF CON Radio" tvg-logo="https://a051-road-tv.onrender.com/logos/geek.svg" group-title="💻 GEEK MODE",DEF CON Radio · hacking soundtrack
+#EXTINF:-1 radio="true" tvg-name="DEF CON Radio" tvg-logo="https://a051-road-tv.onrender.com/logos/geek.svg" group-title="🇷🇺 БЕЗ VPN · GEEK",DEF CON Radio · hacking soundtrack
 https://ice5.somafm.com/defcon-128-aac
-#EXTINF:-1 radio="true" tvg-name="Mission Control" tvg-logo="https://a051-road-tv.onrender.com/logos/space.svg" group-title="💻 GEEK MODE",Mission Control · NASA ambience
+#EXTINF:-1 radio="true" tvg-name="Mission Control" tvg-logo="https://a051-road-tv.onrender.com/logos/space.svg" group-title="🇷🇺 БЕЗ VPN · GEEK",Mission Control · NASA ambience
 https://ice5.somafm.com/missioncontrol-128-aac
-#EXTINF:-1 radio="true" tvg-name="Deep Space One" tvg-logo="https://a051-road-tv.onrender.com/logos/space.svg" group-title="💻 GEEK MODE",Deep Space One · focus
+#EXTINF:-1 radio="true" tvg-name="Deep Space One" tvg-logo="https://a051-road-tv.onrender.com/logos/space.svg" group-title="🇷🇺 БЕЗ VPN · GEEK",Deep Space One · focus
 https://ice5.somafm.com/deepspaceone-128-aac
 
 # --- 🦖 ДАНЧЕЗАВР ---
-#EXTINF:-1 tvg-name="Big Buck Bunny" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Big Buck Bunny · 720p · 10 мин
+#EXTINF:-1 tvg-name="Big Buck Bunny" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🇷🇺 БЕЗ VPN · 🦖 ДАНЧЕЗАВР",Big Buck Bunny · 720p · 10 мин
 https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_720p_h264.mov
-#EXTINF:-1 tvg-name="Caminandes Llama Drama" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 1 · Llama Drama
+#EXTINF:-1 tvg-name="Caminandes Llama Drama" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🇷🇺 БЕЗ VPN · 🦖 ДАНЧЕЗАВР",Caminandes 1 · Llama Drama
 https://archive.org/download/Caminandes1LlamaDrama/01_llama_drama_1080p.mp4
-#EXTINF:-1 tvg-name="Caminandes Gran Dillama" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 2 · Gran Dillama
+#EXTINF:-1 tvg-name="Caminandes Gran Dillama" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🇷🇺 БЕЗ VPN · 🦖 ДАНЧЕЗАВР",Caminandes 2 · Gran Dillama
 https://archive.org/download/Caminandes2GranDillama/02_gran_dillama_1080p.mp4
-#EXTINF:-1 tvg-name="Caminandes Llamigos" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🦖 ДАНЧЕЗАВР",Caminandes 3 · Llamigos
+#EXTINF:-1 tvg-name="Caminandes Llamigos" tvg-logo="https://a051-road-tv.onrender.com/logos/family.svg" group-title="🇷🇺 БЕЗ VPN · 🦖 ДАНЧЕЗАВР",Caminandes 3 · Llamigos
 https://archive.org/download/CaminandesLlamigos/Caminandes_%20Llamigos-1080p.mp4
 
 # --- 📶 СЛАБАЯ СЕТЬ ---
-#EXTINF:-1 tvg-name="France 24 English Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="📶 СЛАБАЯ СЕТЬ",France 24 · 360p
+#EXTINF:-1 tvg-name="France 24 English Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="🌍 VPN · LOW NET",France 24 · 360p
 https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_500.m3u8
-#EXTINF:-1 radio="true" tvg-name="The Trip Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="📶 СЛАБАЯ СЕТЬ",The Trip · 32 kbps
+#EXTINF:-1 radio="true" tvg-name="The Trip Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="🇷🇺 БЕЗ VPN · LOW NET",The Trip · 32 kbps
 https://ice5.somafm.com/thetrip-32-aac
-#EXTINF:-1 radio="true" tvg-name="Groove Salad Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="📶 СЛАБАЯ СЕТЬ",Groove Salad · 32 kbps
+#EXTINF:-1 radio="true" tvg-name="Groove Salad Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="🇷🇺 БЕЗ VPN · LOW NET",Groove Salad · 32 kbps
 https://ice5.somafm.com/groovesalad-32-aac
-#EXTINF:-1 radio="true" tvg-name="DEF CON Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="📶 СЛАБАЯ СЕТЬ",DEF CON · 32 kbps
+#EXTINF:-1 radio="true" tvg-name="DEF CON Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="🇷🇺 БЕЗ VPN · LOW NET",DEF CON · 32 kbps
 https://ice5.somafm.com/defcon-32-aac
-#EXTINF:-1 radio="true" tvg-name="Mission Control Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="📶 СЛАБАЯ СЕТЬ",Mission Control · 32 kbps
+#EXTINF:-1 radio="true" tvg-name="Mission Control Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="🇷🇺 БЕЗ VPN · LOW NET",Mission Control · 32 kbps
 https://ice5.somafm.com/missioncontrol-32-aac
