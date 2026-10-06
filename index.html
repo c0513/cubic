@@ -1,0 +1,28 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MAX ROAD TV</title><style>
+*{box-sizing:border-box}body{margin:0;background:#09090b;color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Arial,sans-serif}
+main{max-width:980px;margin:auto;padding:56px 22px 90px}.hero{padding:42px;border:1px solid #27272a;border-radius:32px;background:radial-gradient(circle at 80% 0,#312e81 0,transparent 38%),linear-gradient(135deg,#18181b,#09090b)}
+.kicker{color:#a1a1aa;font-weight:700;letter-spacing:.14em;font-size:12px}h1{font-size:clamp(46px,10vw,96px);line-height:.92;margin:18px 0 20px;letter-spacing:-.055em}p{color:#a1a1aa;line-height:1.55;font-size:17px}
+.url{margin:28px 0 10px;padding:18px 20px;background:#000;border:1px solid #3f3f46;border-radius:18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto;white-space:nowrap;color:#d4d4d8}
+button,a.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:16px;padding:15px 20px;font-weight:800;font-size:15px;text-decoration:none;cursor:pointer}.primary{background:#fff;color:#09090b}.secondary{background:#27272a;color:#fff;margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:24px}.card{background:#18181b;border:1px solid #27272a;border-radius:22px;padding:22px}.card b{font-size:18px}.card p{font-size:14px;margin-bottom:0}.note{margin-top:24px;padding:18px 20px;border-radius:18px;background:#0c1b13;border:1px solid #14532d;color:#a7f3d0;font-size:14px;line-height:1.5}
+h2{margin-top:52px;font-size:30px;letter-spacing:-.03em}.tiny{font-size:12px;color:#71717a;margin-top:28px}
+</style></head><body><main><section class="hero"><div class="kicker">A051 · PERSONAL APTV FEED</div><h1>MAX<br>ROAD TV</h1>
+<p>Собрано под долгие поездки, гаджеты, игры, терминал, спорт и семейный просмотр. Один URL — и дальше всё обновляется само.</p>
+<div class="url" id="url">__BASE__/max-road.m3u</div>
+<button class="primary" onclick="navigator.clipboard.writeText(document.getElementById('url').innerText);this.innerText='Скопировано ✓'">Скопировать ссылку</button>
+<a class="btn secondary" href="/max-road.m3u">Открыть M3U</a></section>
+<div class="grid">
+<div class="card"><b>⚡ ACTION</b><p>Red Bull TV в 1080p для дороги и фона.</p></div>
+<div class="card"><b>🌍 WORLD LIVE</b><p>France 24, DW, NHK, Reuters и бонусный NASA.</p></div>
+<div class="card"><b>🛣️ ROAD MODE</b><p>The Trip, Groove Salad и Secret Agent — музыка без лишней болтовни.</p></div>
+<div class="card"><b>💻 GEEK MODE</b><p>DEF CON Radio, Mission Control и Deep Space One.</p></div>
+<div class="card"><b>🦖 ДАНЧЕЗАВР</b><p>Небольшая семейная полка: Big Buck Bunny + Caminandes.</p></div>
+<div class="card"><b>📶 СЛАБАЯ СЕТЬ</b><p>32 kbps радио и 360p новости, когда LTE еле жив.</p></div>
+</div>
+<div class="note"><b>Про настоящий офлайн:</b> APTV — стриминговый плеер, поэтому без сети live-каналы не оживут. Я специально добавил сверхлёгкий режим для плохой связи. Для мест совсем без сети семейные ролики лучше заранее скачать в «Файлы» — ссылки на них есть в семейном плейлисте.</div>
+<h2>Бонусные конфиги</h2><div class="grid">
+<div class="card"><b>Low Net</b><p><a style="color:white" href="/road-low.m3u">__BASE__/road-low.m3u</a></p></div>
+<div class="card"><b>Family</b><p><a style="color:white" href="/family.m3u">__BASE__/family.m3u</a></p></div>
+<div class="card"><b>Live only</b><p><a style="color:white" href="/live.m3u">__BASE__/live.m3u</a></p></div>
+</div><div class="tiny">Made for Max · sources are public streams and openly licensed media; availability can change by region/provider.</div></main></body></html>
