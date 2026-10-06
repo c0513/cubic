@@ -1,0 +1,11 @@
+#EXTM3U
+#EXTINF:-1 tvg-name="France 24 English Low" tvg-logo="__BASE__/logos/low.svg" group-title="📶 LOW NET",France 24 · 360p
+https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_500.m3u8
+#EXTINF:-1 radio="true" tvg-name="The Trip Low" tvg-logo="__BASE__/logos/low.svg" group-title="📶 LOW NET",The Trip · 32 kbps
+https://ice5.somafm.com/thetrip-32-aac
+#EXTINF:-1 radio="true" tvg-name="Groove Salad Low" tvg-logo="__BASE__/logos/low.svg" group-title="📶 LOW NET",Groove Salad · 32 kbps
+https://ice5.somafm.com/groovesalad-32-aac
+#EXTINF:-1 radio="true" tvg-name="DEF CON Low" tvg-logo="__BASE__/logos/low.svg" group-title="📶 LOW NET",DEF CON · 32 kbps
+https://ice5.somafm.com/defcon-32-aac
+#EXTINF:-1 radio="true" tvg-name="Mission Control Low" tvg-logo="__BASE__/logos/low.svg" group-title="📶 LOW NET",Mission Control · 32 kbps
+https://ice5.somafm.com/missioncontrol-32-aac
