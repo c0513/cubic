@@ -18,6 +18,16 @@ https://cdn-evacoder-tv.facecast.io/evacoder_hls_hi/CkxfR1xNUAJwTgtXTBZTAJli/ind
 #EXTINF:-1 tvg-id="Afontovo.ru" tvg-name="Афонтово" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-tv.svg" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",Афонтово · HD
 https://stream.afontovo.ru/hd.m3u8
 
+
+#EXTINF:-1 tvg-id="TelekanalZvezda.ru" tvg-name="Звезда" tvg-logo="https://i.imgur.com/c0L0ncA.png" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",Звезда
+https://tvchannelstream1.tvzvezda.ru/cdn/tvzvezda/playlist.m3u8
+
+#EXTINF:-1 tvg-id="Mir.ru" tvg-name="МИР" tvg-logo="https://i.imgur.com/L2slsbG.png" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",МИР
+http://hls.mirtv.cdnvideo.ru/mirtv-parampublish/mirtv_2500/playlist.m3u8
+
+#EXTINF:-1 tvg-id="TelekanalSpas.ru" tvg-name="Спас" tvg-logo="https://i.imgur.com/A6Cqsom.jpeg" group-title="🇷🇺 ТВ · ОСНОВНЫЕ",Спас
+https://spas.mediacdn.ru/cdn/spas/playlist.m3u8
+
 # --- 📰 НОВОСТИ / ДЕЛО ---
 #EXTINF:-1 tvg-id="Russia24.ru" tvg-name="Россия 24" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-news.svg" group-title="🇷🇺 ТВ · НОВОСТИ",Россия 24 · 720p
 https://stream.smotrim.ru/hls2/russia24nl_smotrim/playlist_5.m3u8
@@ -69,6 +79,40 @@ https://radiorecord.hostingradio.ru/rock96.aacp
 
 #EXTINF:-1 radio="true" tvg-name="Наше Радио" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",НАШЕ Радио · 128 kbps
 https://nashe1.hostingradio.ru:80/nashe-128.mp3
+
+
+#EXTINF:-1 radio="true" tvg-name="Европа Плюс" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Европа Плюс · 256 kbps
+https://ep256.hostingradio.ru:8052/europaplus256.mp3
+
+#EXTINF:-1 radio="true" tvg-name="Дорожное Радио" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Дорожное Радио
+https://dorognoe.hostingradio.ru:8000/dorognoe
+
+#EXTINF:-1 radio="true" tvg-name="Maximum" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Maximum · 128 kbps
+https://maximum.hostingradio.ru/maximum128.mp3
+
+#EXTINF:-1 radio="true" tvg-name="Русское Радио" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Русское Радио
+https://rusradio.hostingradio.ru/rusradio96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Монте-Карло" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Монте-Карло
+https://montecarlo.hostingradio.ru/montecarlo96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Хит FM" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Хит FM
+https://hitfm.hostingradio.ru/hitfm96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Ретро FM" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · ROAD",Ретро FM · 256 kbps
+https://retro.hostingradio.ru:8043/retro256.mp3
+
+#EXTINF:-1 radio="true" tvg-name="Коммерсантъ FM" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-news.svg" group-title="🇷🇺 RADIO · NEWS",Коммерсантъ FM · 128 kbps
+https://kommersant77.hostingradio.ru:8016/kommersant128.mp3
+
+#EXTINF:-1 radio="true" tvg-name="Record Deep" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · CHILL",Record · Deep
+https://radiorecord.hostingradio.ru/deep96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Record Chill-Out" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · CHILL",Record · Chill-Out
+https://radiorecord.hostingradio.ru/chil96.aacp
+
+#EXTINF:-1 radio="true" tvg-name="Record Lo-Fi" tvg-logo="https://a051-road-tv.onrender.com/logos/ru-radio.svg" group-title="🇷🇺 RADIO · CHILL",Record · Lo-Fi
+https://radiorecord.hostingradio.ru/lofi96.aacp
 
 # --- 📶 РОССИЯ · СЛАБАЯ СЕТЬ ---
 #EXTINF:-1 radio="true" tvg-name="Record Russian Hits Low" tvg-logo="https://a051-road-tv.onrender.com/logos/low.svg" group-title="🇷🇺 LOW NET",Record · Russian Hits · 64 kbps
