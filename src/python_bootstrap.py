@@ -27,6 +27,10 @@ class Explorer:
         self.traveled = 0
         self.max_range = state['maxRange']
         self.boards = state['boards']
+        self.grandma_cell = tuple(state['grandmaCell']) if state.get('grandmaCell') else None
+        self.talked_to_grandma = bool(state.get('grandmaTalked'))
+        self.package_ready = bool(state.get('packageReady'))
+        self.package_delivered = bool(state.get('packageDelivered'))
 
     def forward_cell(self):
         dx, dz = self.VECTORS[self.heading]
@@ -69,6 +73,28 @@ class Explorer:
         self.heading=(self.heading+1)%4
         self._action('turn',facing=self.heading)
 
+    def _near_grandma(self):
+        return (self.grandma_cell is not None and
+                abs(self.x-self.grandma_cell[0])+abs(self.z-self.grandma_cell[1]) <= 1)
+
+    def talk(self):
+        if not self._near_grandma():
+            raise WorldError('Бабушки здесь нет. Подойди к её пиксельной фигурке и попробуй talk().')
+        self.talked_to_grandma = True
+        self._action('talk', x=self.x, z=self.z)
+
+    def give_package(self):
+        if not self._near_grandma():
+            raise WorldError('Сначала подойди к бабушке — посылку нельзя передать издалека.')
+        if self.package_delivered:
+            raise WorldError('Ты уже отдал посылку бабушке! Теперь ищи ключ в новом квесте.')
+        if not self.package_ready:
+            raise WorldError('Сначала выполни все три городских квеста и собери игровую посылку.')
+        if not self.talked_to_grandma:
+            raise WorldError('Сначала поздоровайся с бабушкой командой talk().')
+        self.package_delivered = True
+        self._action('deliver', x=self.x, z=self.z)
+
     def place_block(self):
         cell=self.forward_cell()
         if cell not in self.water or cell in self.bridges:
@@ -95,6 +121,8 @@ turn_left=hero.turn_left
 turn_right=hero.turn_right
 place_block=hero.place_block
 collect=hero.collect
+talk=hero.talk
+give_package=hero.give_package
 front_is_clear=hero.front_is_clear
 is_water_ahead=hero.is_water_ahead
 crystal_here=hero.crystal_here
@@ -107,7 +135,7 @@ try:
             'hero':hero,
             'move_forward':move_forward, 'turn_left':turn_left,
             'turn_right':turn_right,'place_block':place_block,
-            'collect':collect,'front_is_clear':front_is_clear,
+            'collect':collect,'talk':talk,'give_package':give_package,'front_is_clear':front_is_clear,
             'is_water_ahead':is_water_ahead,'crystal_here':crystal_here,
             '__name__':'__main__'
         })

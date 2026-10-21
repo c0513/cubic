@@ -3,6 +3,7 @@ import { LEVELS, STORAGE_KEY } from './levels.js';
 import { FIRST_JOURNEY, resolveGoal, directionToCell, finishedGoal, metersApart } from './route.js';
 import { panoramaUrl, mapUrl } from './panorama.js';
 import { STREET_QUESTS, planStreetQuest, evaluateStreetQuest, reachableCells, sameCell, streetHint } from './street-quests.js';
+import { isCloseToNPC, chooseGrandmaCell, nextGrandmaState, planKeyQuest, collectedKey, GRANDMA_REWARD, CHAPTER_REWARD, CHAPTER_NAME } from './grandma.js';
 
 const $ = id => document.getElementById(id);
 const game = new GeoVoxelGame($('game'));
@@ -24,13 +25,88 @@ let streetProgress=Number.isInteger(saved?.streetProgress)?Math.min(STREET_QUEST
 let streetQuest=null;
 let previousStreetTarget=Array.isArray(saved?.streetPrevious)?saved.streetPrevious:null;
 let restoredStreetTarget=Array.isArray(saved?.streetTarget)?saved.streetTarget:null;
+let grandmaState={talked: Boolean(saved?.grandma?.talked),delivered: Boolean(saved?.grandma?.delivered)};
+let chapterTarget=Array.isArray(saved?.chapterTarget)&&saved.chapterTarget.length===2?saved.chapterTarget:null;
+let chapterCompleted=Boolean(saved?.chapterCompleted);
 
 
 
 function save(){
   try {localStorage.setItem(STORAGE_KEY, JSON.stringify({place,completed,coins, position:game.playerGlobal,heading:game.heading,crystalTaken:game.crystalTaken,bridgeBuilt:game.bridgeBuilt,
-    goalCoords,goalVerified:!!goalCoords,codeDrafts,streetProgress,streetTarget:streetQuest?.target || null,streetPrevious:previousStreetTarget}));}
+    goalCoords,goalVerified:!!goalCoords,codeDrafts,streetProgress,streetTarget:streetQuest?.target || null,streetPrevious:previousStreetTarget,
+    grandma:grandmaState,chapterTarget,chapterCompleted}));}
   catch (_) {}
+}
+function syncGrandmaWorld(){
+  game.setGrandmaContext(grandmaState,streetProgress>=STREET_QUESTS.length);
+  game.setChapterTarget(grandmaState.delivered&&!chapterCompleted?chapterTarget:null);
+}
+function refreshGrandmaCell(){
+  if(!goalCell||!game.playerGlobal||Math.max(Math.abs(goalCell[0]-game.playerGlobal[0]),Math.abs(goalCell[1]-game.playerGlobal[1]))>15){
+    game.setGrandmaCell(null);
+  }else{
+    // This is a walkable *game* marker near a verified house, not an asserted entrance.
+    game.setGrandmaCell(chooseGrandmaCell((x,z)=>game.cell(x,z),goalCell,game.playerGlobal));
+  }
+  syncGrandmaWorld();
+  updateGrandmaUI();
+}
+function updateGrandmaUI(){
+  const done=grandmaState.delivered;
+  $('grandmaBadge').textContent=done?'✅ ПОСЫЛКА ПЕРЕДАНА':grandmaState.talked?'💬 ЗНАКОМЫ':'🏠 ВСТРЕЧА ВПЕРЕДИ';
+  $('grandmaTitle').textContent=done?'Бабушка открыла новую главу!': 'Бабушка ждёт в конце пути';
+  let detail;
+  if(!goalCell) detail='Сначала нужно подтвердить точное местоположение дома. Если адрес не найден, NPC не подставляется к соседнему зданию.';
+  else if(!game.grandmaCell)detail='Иди к дому бабушки. Когда подойдёшь ближе, увидишь пиксельную бабушку.';
+  else if(done)detail=chapterCompleted?'Ты вернул потерянный ключ. Все награды получены!':'Посылка вручена! Теперь найди спрятанный ключ во дворе.';
+  else if(streetProgress<STREET_QUESTS.length)detail='Бабушка рядом! Сначала собери посылку в трёх городских квестах.';
+  else detail='Подойди к бабушке на соседнюю клетку. Напиши talk(), затем give_package().';
+  $('grandmaDescription').textContent=detail;
+  $('grandmaCommand').textContent=done?(chapterCompleted?'🏆 Глава 2 завершена':'🔑 Найди ключ и выполни collect()'):'talk()  →  give_package()';
+  $('grandmaHintButton').textContent=done?'📖 Подсказка к главе 2':'📖 Как поговорить';
+  $('mapGrandma').classList.toggle('hidden',!game.grandmaCell);
+}
+function showGrandmaDialogue(kind){
+  $('grandmaDialogue').classList.remove('hidden');
+  if(kind==='deliver'){
+    $('grandmaDialogueTitle').textContent='Спасибо, мой Данчезаврик! 💜';
+    $('grandmaDialogueText').textContent='Посылка у меня! За твою помощь дарю 250 кристаллов. А теперь новое приключение: я обронила старинный ключ во дворе. Найди его с помощью Python и команды collect()!';
+  }else if(streetProgress<STREET_QUESTS.length){
+    $('grandmaDialogueTitle').textContent='Привет, внучек! 👵';
+    $('grandmaDialogueText').textContent='Какой ты вырос! Сначала выполни три городских задания и принеси мне посылку. Потом напиши give_package(), и я расскажу тебе секрет.';
+  }else{
+    $('grandmaDialogueTitle').textContent='Рада тебя видеть! 👵';
+    $('grandmaDialogueText').textContent='Умница, ты сам дошёл ко мне! Теперь введи give_package(), чтобы отдать собранную посылку. Можно использовать talk() и give_package() в одной программе.';
+  }
+}
+function checkGrandmaActions(actions){
+  const result=nextGrandmaState(grandmaState,actions,streetProgress>=STREET_QUESTS.length,game.playerGlobal,game.grandmaCell);
+  grandmaState.talked=result.talked;
+  if(result.deliveredNow){
+    grandmaState.delivered=true;
+    coins+=GRANDMA_REWARD;
+    chapterTarget=planKeyQuest((x,z)=>game.cell(x,z),game.playerGlobal,game.grandmaCell);
+    showToast(`🎁 Посылка вручена! +${GRANDMA_REWARD} 💎`);
+    showGrandmaDialogue('deliver');
+  }else if(result.greeted){
+    showGrandmaDialogue('greet');
+  }
+  syncGrandmaWorld();updateGrandmaUI();renderQuests();save();
+}
+function checkChapterActions(actions){
+  if(!grandmaState.delivered||chapterCompleted)return;
+  if(!chapterTarget){
+    chapterTarget=planKeyQuest((x,z)=>game.cell(x,z),game.playerGlobal,game.grandmaCell);
+    syncGrandmaWorld();updateGrandmaUI();save();
+    return;
+  }
+  if(!collectedKey(actions,chapterTarget))return;
+  chapterCompleted=true;chapterTarget=null;coins+=CHAPTER_REWARD;
+  syncGrandmaWorld();updateGrandmaUI();renderQuests();updateMap();save();
+  $('grandmaDialogueTitle').textContent='Ключ найден! 🔑';
+  $('grandmaDialogueText').textContent=`Ты завершил «${CHAPTER_NAME}» и заработал ещё ${CHAPTER_REWARD} кристаллов. Бабушка гордится тобой! Продолжай исследовать большой мир.`;
+  $('grandmaDialogue').classList.remove('hidden');
+  showToast(`🔑 Тайна двора раскрыта! +${CHAPTER_REWARD} 💎`);
 }
 function showToast(msg){
   const t=$('toast');t.textContent=msg;t.classList.remove('hidden');
@@ -47,7 +123,7 @@ function reachableStreetTarget(target){
   return reachableCells((x,z)=>game.cell(x,z),game.playerGlobal,12).some(c=>sameCell(c.position,target));
 }
 function setStreetStage(reuse=false){
-  if(streetProgress>=STREET_QUESTS.length){streetQuest=null;game.setStreetWaypoint(null);updateStreetUI();return;}
+  if(streetProgress>=STREET_QUESTS.length){streetQuest=null;game.setStreetWaypoint(null);updateStreetUI();syncGrandmaWorld();updateGrandmaUI();return;}
   let q=null;
   if(reuse&&restoredStreetTarget&&reachableStreetTarget(restoredStreetTarget)){
     q={stage:streetProgress,target:[...restoredStreetTarget],kind:STREET_QUESTS[streetProgress].id,
@@ -56,13 +132,13 @@ function setStreetStage(reuse=false){
   streetQuest=q||planStreetQuest((x,z)=>game.cell(x,z),game.playerGlobal,streetProgress,previousStreetTarget);
   restoredStreetTarget=null;
   game.setStreetWaypoint(streetQuest);
-  updateStreetUI();save();
+  updateStreetUI();syncGrandmaWorld();updateGrandmaUI();save();
 }
 function updateStreetUI(){
   const finished=streetProgress>=STREET_QUESTS.length;
   $('streetCount').textContent=`${streetProgress} / ${STREET_QUESTS.length}`;
   $('streetTitle').textContent=finished?'🎉 Все городские квесты пройдены!':STREET_QUESTS[streetProgress].icon+' '+STREET_QUESTS[streetProgress].name;
-  $('streetDescription').textContent=finished?'Подарок для бабушки собран. Продолжай путешествие к дому бабушки по своему маршруту.':
+  $('streetDescription').textContent=finished?'Подарок для бабушки собран. Подойди к NPC-бабушке, напиши talk() и give_package().':
     streetQuest ? (streetQuest.generic && streetProgress>0?'На этом участке пока нет подходящего здания. Иди к игровому ориентиру.':STREET_QUESTS[streetProgress].story):
     'Не удалось построить доступный путь. Попробуй загрузить другой участок карты.';
   $('streetInstruction').textContent=finished?'Отлично! Все награды получены.':
@@ -79,10 +155,19 @@ function checkStreetQuest(actions){
   setStreetStage(false);
   renderQuests();
   updateMap();
+  updateGrandmaUI();
   save();
   showToast(`🏙 ${quest.name}: выполнено! +${quest.reward} 💎`);
   feedback(`Городская миссия выполнена: ${quest.name}. +${quest.reward} кристаллов!`,'good');
 }
+$('grandmaHintButton').addEventListener('click',()=>{
+  const message=grandmaState.delivered ?
+    'Ключ отмечен значком 🔑. Дойди до него и выполни collect(). Решение маршрута придумай сам.' :
+    'Чтобы поговорить: talk(). Чтобы передать посылку: give_package(). Напиши команды сам, стоя рядом с бабушкой. Перед этим собери посылку.';
+  feedback(message,'info');openEditor();
+});
+$('grandmaDialogueClose').addEventListener('click',()=>{$('grandmaDialogue').classList.add('hidden');});
+$('grandmaDialogueCode').addEventListener('click',()=>{$('grandmaDialogue').classList.add('hidden');openEditor();});
 $('streetHintButton').addEventListener('click',()=>{
   feedback(streetProgress>=STREET_QUESTS.length?'Все городские задания пройдены!':
     streetHint(streetQuest,game.playerGlobal),'info');
@@ -126,6 +211,12 @@ function updateQuest(){
   $('lessonCommand').textContent=sandbox?'Твои программы':level.command;
   $('lessonExplain').textContent=sandbox?'Экспериментируй с командами, циклами for, проверками if и функциями.':level.explain;
   $('lessonExample').textContent=sandbox?'if front_is_clear():\n    move_forward()':level.example;
+  if(grandmaState.delivered && !chapterCompleted){
+    $('missionTask').textContent='Глава 2: найди на мини-карте ключ 🔑 и забери его командой collect().';
+    $('lessonCommand').textContent='collect()';
+    $('lessonExplain').textContent='Когда Данчезавр стоит на клетке с игровым ключом, collect() поднимет его.';
+    $('lessonExample').textContent='collect()';
+  }
   feedback('Пиши Python и запускай. Герой повторит команды на карте.');
 }
 function updateLines(){
@@ -214,6 +305,7 @@ $('restartJourney').addEventListener('click',async()=>{
   if(busy)return;
   if(!window.confirm('Начать путешествие из дома заново? Сбросится прохождение, но не уроки и код.'))return;
   completed=[];coins=0;selected=0;codeDrafts={};streetProgress=0;streetQuest=null;previousStreetTarget=null;restoredStreetTarget=null;
+  grandmaState={talked:false,delivered:false};chapterTarget=null;chapterCompleted=false;
   await goToPlace(...HOME,true);game.goalGlobal=goalCell;
   updateQuest();updateGoalUI();showToast('Ты вернулся на Народного Ополчения, 12к4');
 });
@@ -246,7 +338,12 @@ function onWorkerMessage({data}){
     toggleBusy(false);
     if(data.print?.trim())feedback(`Вывод программы: ${data.print.trim()}`,'info');
     else feedback(steps.length?`Готово! Выполнено действий: ${steps.length}.`:'Код выполнен, но персонаж остался на месте.','good');
-    checkQuest(steps,$('codeInput').value);checkStreetQuest(steps);updateMap();save();
+    refreshGrandmaCell();
+    checkStreetQuest(steps);
+    checkGrandmaActions(steps);
+    checkQuest(steps,$('codeInput').value);
+    checkChapterActions(steps);
+    updateMap();save();
   });
 }
 async function animateActions(actions){
@@ -281,10 +378,10 @@ function checkQuest(actions,code){
     ()=> moves>=1 && turns>=1,
     ()=> moves>=2 && /\bfor\b/.test(code) && /\brange\s*\(/.test(code),
     ()=> /\bif\s+front_is_clear\s*\(/.test(code) && /\bmove_forward\s*\(/.test(code),
-    ()=> finishedGoal(game.playerGlobal,goalCell,2)
+    ()=> grandmaState.delivered && isCloseToNPC(game.playerGlobal,game.grandmaCell)
   ];
   if(!logic[current]()){
-    if(current===4)feedback(goalCell?'Продолжай маршрут. Компас укажет направление к бабушке.':'Финиш пока не определён: нужно подтвердить точные координаты дома бабушки.','info');
+    if(current===4)feedback(goalCell?'Найди бабушку, принеси посылку, затем используй talk() и give_package().':'Финиш пока не определён: нужно подтвердить точные координаты дома бабушки.','info');
     return;
   }
   const level=LEVELS[current];completed.push(current);coins+=level.reward;selected=Math.min(LEVELS.length,completed.length);
@@ -292,7 +389,7 @@ function checkQuest(actions,code){
   $('victoryText').textContent=current===4?'Ура! Данчезавр пришёл в гости к бабушке, а маршрут придумал ты сам!':`${level.name}: отлично! Сам написал работающий Python.`;
   $('victoryReward').textContent=`+${level.reward} 💎`;
   $('nextButton').textContent=selected===LEVELS.length?'Играть дальше →':'Следующая миссия →';
-  $('victory').classList.remove('hidden');save();
+  if(current!==4)$('victory').classList.remove('hidden');save();
 }
 function updateGoalUI(){
   if(!game.playerGlobal)return;
@@ -300,15 +397,15 @@ function updateGoalUI(){
   if(!goalCell){el.textContent='⏳ Ищем точную координату корпуса 1к5';distance.textContent='Миссия доступна после подтверждения адреса';return;}
   const [x,z]=game.playerGlobal,dir=directionToCell(x,z,...goalCell),latlon=gridToLatLon(x,z);
   const meters=Math.round(metersApart(latlon,goalCoords));
-  el.textContent=finishedGoal([x,z],goalCell,2)?'🎉 Ты у бабушки!':`🧭 К бабушке: ${dir}`;
+  el.textContent=grandmaState.delivered?'🎉 Посылка у бабушки!':finishedGoal([x,z],goalCell,2)?'👵 Бабушка рядом — найди фигурку NPC!':`🧭 К бабушке: ${dir}`;
   distance.textContent=`До цели по прямой ≈ ${meters} м · маршрут по улицам длиннее`;
 }
 async function loadGoal(){
-  if(goalCoords){game.setGoal(goalCell);updateGoalUI();return;}
+  if(goalCoords){game.setGoal(goalCell);refreshGrandmaCell();updateGoalUI();return;}
   try{
     const point=await resolveGoal();
     goalCoords=[point.lat,point.lon];goalCell=toGrid(...goalCoords);
-    game.setGoal(goalCell);updateGoalUI();updateMap();save();
+    game.setGoal(goalCell);refreshGrandmaCell();updateGoalUI();updateMap();save();
     showToast('Адрес бабушки найден на карте!');
   }catch(e){
     $('goalDirection').textContent='📍 Адрес корпуса пока не удалось определить';
@@ -361,6 +458,15 @@ function updateMap(){
     street.style.left=`${sl}px`;street.style.top=`${st}px`;
     street.classList.toggle('hidden',sl<12||sl>width-12||st<12||st>height-12);
   }else street.classList.add('hidden');
+  function plotMarker(element,cell){
+    if(!cell){element.classList.add('hidden');return;}
+    const [markLat,markLon]=gridToLatLon(...cell),[markX,markY]=slippy(markLat,markLon,zoom);
+    const left=width/2+markX-worldX,top=height/2+markY-worldY;
+    element.classList.toggle('hidden',left<12||left>width-12||top<12||top>height-12);
+    element.style.left=`${left}px`;element.style.top=`${top}px`;
+  }
+  plotMarker($('mapGrandma'),game.grandmaCell);
+  plotMarker($('mapChapter'),grandmaState.delivered&&!chapterCompleted?chapterTarget:null);
   const goal=$('mapGoal');
   if(goalCoords){
     const [goalWX,goalWY]=slippy(...goalCoords,zoom);
@@ -402,13 +508,13 @@ async function maybeLoadRealWorld(force=false){
     const features=parseOSM(json.elements||[]);
     if(!features.length)throw new Error('На участке нет доступных объектов');
     game.setFeatures(features,'osm');
-    setStreetStage(true);
+    setStreetStage(true);refreshGrandmaCell();
     $('geoStatus').textContent=`3D из OpenStreetMap · объектов: ${features.length}`;
     updateMap();
   }catch(e){
     if(currentID!==fetchID)return;
     game.setFeatures([],'stylized');
-    setStreetStage(true);
+    setStreetStage(true);refreshGrandmaCell();
     $('geoStatus').textContent='3D-деморежим · карта OSM доступна отдельно';
     console.warn('OpenStreetMap 3D import unavailable',e);
   }finally{clearTimeout(timer);}
@@ -417,7 +523,11 @@ async function maybeLoadRealWorld(force=false){
 async function goToPlace(lat,lon,reset=true){
   place=[lat,lon];fetchID++;fetchCenter=null;
   game.setPlace(lat,lon);game.goalGlobal=goalCell;
-  if(reset){completed=[];coins=0;selected=0;streetProgress=0;streetQuest=null;previousStreetTarget=null;restoredStreetTarget=null;updateQuest();}
+  if(reset){
+    completed=[];coins=0;selected=0;streetProgress=0;streetQuest=null;previousStreetTarget=null;restoredStreetTarget=null;
+    grandmaState={talked:false,delivered:false};chapterTarget=null;chapterCompleted=false;
+    updateQuest();
+  }
   else{
     game.playerGlobal=saved?.position?.length===2?saved.position:[...game.spawn];
     game.heading=Number.isInteger(saved?.heading)?saved.heading:3;
@@ -425,7 +535,7 @@ async function goToPlace(lat,lon,reset=true){
     game.bridgeBuilt=Boolean(saved?.bridgeBuilt);
     game.geoCenter=[...game.playerGlobal];game.rebuild();updateQuest();
   }
-  setStreetStage(!reset);updateMap();save();
+  setStreetStage(!reset);refreshGrandmaCell();updateMap();save();
   await maybeLoadRealWorld(true);
 }
 $('changePlaceButton').addEventListener('click',()=>{$('searchModal').classList.remove('hidden');});

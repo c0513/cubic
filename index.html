@@ -41,9 +41,16 @@
       <button id="streetHintButton" type="button">💡 Подсказка по маршруту</button>
       <small>Светящийся маяк — игровой объект. Python напиши сам!</small>
     </section>
+    <section class="grandma-card" aria-label="Встреча с бабушкой и вторая глава">
+      <div class="grandma-header"><span class="grandma-portrait" aria-hidden="true">👵</span><div><span class="eyebrow" id="grandmaBadge">🏠 ВСТРЕЧА ВПЕРЕДИ</span><strong id="grandmaTitle">Бабушка ждёт в конце пути</strong></div></div>
+      <p id="grandmaDescription">Иди к дому бабушки. Там тебя ждёт новый персонаж.</p>
+      <div class="grandma-command" id="grandmaCommand">talk() → give_package()</div>
+      <button id="grandmaHintButton" type="button">📖 Как поговорить</button>
+      <small>NPC и предметы вымышленные. Команды вводишь сам.</small>
+    </section>
     <section class="world-map" id="worldMap" aria-label="Настоящая карта OpenStreetMap">
       <div class="map-head"><strong>🌍 РЕАЛЬНАЯ КАРТА</strong><button id="changePlaceButton" title="Сменить город">⌕ Сменить место</button></div>
-      <div class="map-viewport" id="mapViewport"><div id="mapTiles" class="map-tiles"></div><div class="map-grid"></div><div class="map-goal hidden" id="mapGoal" title="Дом бабушки">🏠</div><div class="map-street hidden" id="mapStreet" title="Городское задание">⭐</div><div class="map-player">🦖</div></div>
+      <div class="map-viewport" id="mapViewport"><div id="mapTiles" class="map-tiles"></div><div class="map-grid"></div><div class="map-goal hidden" id="mapGoal" title="Дом бабушки">🏠</div><div class="map-street hidden" id="mapStreet" title="Городское задание">⭐</div><div class="map-grandma hidden" id="mapGrandma" title="Игровой персонаж — бабушка">👵</div><div class="map-chapter hidden" id="mapChapter" title="Глава 2: ключ">🔑</div><div class="map-player">🦖</div></div>
       <div class="map-foot">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors <span id="mapMeters">1 клетка ≈ 18 м</span></div>
     </section>
     <button class="open-code-button" id="openCodeButton">🐍 НАПИСАТЬ КОД <span>→</span></button>
@@ -62,20 +69,29 @@
       <div class="editor-tools"><button id="hintButton">💡 Подсказка</button><button id="solutionButton">📖 Пример</button><button id="backToHub">🌍 На карту</button></div>
       <div class="editor-foot">Настоящий CPython (Pyodide) · Работает в браузере · Для запуска нужен интернет</div>
     </section>
-    <div class="code-controls" id="codeControls"><span>🎮 Управление миром — командами Python</span><div><code>move_forward()</code><code>turn_left()</code><code>collect()</code></div></div>
+    <div class="code-controls" id="codeControls"><span>🎮 Управление миром — командами Python</span><div><code>move_forward()</code><code>turn_left()</code><code>collect()</code><code>talk()</code></div></div>
     <div id="toast" class="toast hidden" role="status"></div>
     <div id="intro" class="modal-wrap">
       <div class="intro-card">
         <span class="intro-star">✦ НОВОЕ ПРИКЛЮЧЕНИЕ ✦</span>
         <div class="intro-mascot" aria-hidden="true">🦖</div>
         <h2>Добро пожаловать в<br><em>Codecraft!</em></h2>
-        <p>Твой мир. Твои правила. Твой <strong>Python.</strong><br>Сегодня отправляемся по улицам Москвы к бабушке. Сам печатай команды — динозавр будет идти по клеткам настоящей карты!</p>
-        <div class="intro-benefits"><span>🌍 Реальная карта</span><span>🐍 Python</span><span>🧠 5 уроков + 3 квеста</span></div>
+        <p>Твой мир. Твои правила. Твой <strong>Python.</strong><br>Сегодня отправляемся по улицам Москвы к бабушке. Собери посылку и поговори с бабушкой на Python! Сам печатай команды — динозавр будет идти по клеткам настоящей карты!</p>
+        <div class="intro-benefits"><span>🌍 Реальная карта</span><span>🐍 Python</span><span>🧠 5 уроков + 3 квеста + бабушка</span></div>
         <button class="primary-button huge" id="startButton">🚀 Начать приключение <span>→</span></button>
         <button class="plain-button" id="exploreButton">Посмотреть карту</button>
       </div>
     </div>
     <div id="victory" class="modal-wrap hidden"><div class="win-card"><div class="win-icon">🏆</div><div class="eyebrow">МИССИЯ ВЫПОЛНЕНА!</div><h2>Код работает! 🎉</h2><p id="victoryText">Ты прошёл испытание!</p><div class="win-reward" id="victoryReward">+50 💎</div><button class="primary-button huge" id="nextButton">Следующая миссия →</button><button class="plain-button" id="victoryExplore">Продолжить исследование</button></div></div>
+    <div id="grandmaDialogue" class="modal-wrap hidden" role="dialog" aria-modal="true" aria-labelledby="grandmaDialogueTitle">
+      <div class="help-card grandma-dialogue-card">
+        <div class="grandma-dialogue-avatar" aria-hidden="true">👵</div>
+        <div class="eyebrow">💜 ДАНЧЕЗАВР · БОЛЬШОЕ ПРИКЛЮЧЕНИЕ</div>
+        <h2 id="grandmaDialogueTitle">Привет, внучек!</h2>
+        <p id="grandmaDialogueText">Бабушка ждёт тебя дома.</p>
+        <div class="grandma-dialogue-buttons"><button id="grandmaDialogueCode" class="primary-button" type="button">🐍 Написать Python</button><button id="grandmaDialogueClose" class="plain-button" type="button">Вернуться в город</button></div>
+      </div>
+    </div>
     <div id="searchModal" class="modal-wrap hidden"><div class="help-card"><button class="icon-button help-close" id="searchClose">✕</button><h2>🌍 Куда отправимся?</h2><p>Найди город, парк или адрес. Игра переместится на новую часть реальной карты. Это игровое перемещение — GPS устройства мы не используем.</p><form id="placeForm" class="place-form"><input id="placeInput" type="search" placeholder="Например, Москва, Зарядье" required autocomplete="off"><button type="submit" class="primary-button">Найти</button></form><div class="place-presets"><button data-place="55.7517,37.6287">Москва</button><button data-place="59.9391,30.3158">Петербург</button><button data-place="55.7985,49.1063">Казань</button><button data-place="48.8584,2.2945">Париж</button></div><p class="search-message" id="searchMessage"></p></div></div>
     <div id="panoramaModal" class="modal-wrap hidden" role="dialog" aria-modal="true" aria-labelledby="panoramaTitle">
       <div class="help-card panorama-card">
@@ -98,7 +114,7 @@
         <button class="primary-button" type="button" id="panoramaDone">Вернуться к Данчезавру</button>
       </div>
     </div>
-    <div id="helpModal" class="modal-wrap hidden"><div class="help-card"><button class="icon-button help-close" id="helpClose">✕</button><h2>Как играть 🎮</h2><p><strong>На iPad:</strong> нажми «Написать код», введи Python и запускай. Команды двигают Данчезавра по клеткам настоящей карты. Поворот камеры: проведи пальцем по 3D-миру.</p><p><strong>На компьютере:</strong> тоже управляй с помощью Python. Мышью можно только поворачивать камеру.</p><p><strong>Python:</strong> открой миссию, напиши команды в редакторе, запусти код и посмотри, что сделал герой. Отступы после <code>for</code> и <code>if</code> важны!</p><button class="primary-button" id="helpOk">Понятно!</button></div></div>
+    <div id="helpModal" class="modal-wrap hidden"><div class="help-card"><button class="icon-button help-close" id="helpClose">✕</button><h2>Как играть 🎮</h2><p><strong>На iPad:</strong> нажми «Написать код», введи Python и запускай. Команды двигают Данчезавра по клеткам настоящей карты. Поворот камеры: проведи пальцем по 3D-миру.</p><p><strong>На компьютере:</strong> тоже управляй с помощью Python. Мышью можно только поворачивать камеру.</p><p><strong>В гостях у бабушки:</strong> сначала собери игровую посылку, затем подойди к пиксельной бабушке и выполни <code>talk()</code> и <code>give_package()</code>. После этого откроется глава про потерянный ключ.</p><p><strong>Python:</strong> открой миссию, напиши команды в редакторе, запусти код и посмотри, что сделал герой. Отступы после <code>for</code> и <code>if</code> важны!</p><button class="primary-button" id="helpOk">Понятно!</button></div></div>
   </main>
   <script type="module" src="src/main.js"></script>
 </body>
