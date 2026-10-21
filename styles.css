@@ -72,3 +72,46 @@
 @media(orientation:landscape) and (max-height:650px){.street-quest{top:auto;bottom:70px;left:10px;width:240px;max-height:155px;overflow:auto;gap:4px}.street-quest small{display:none}}
 
 .grandma-card{padding:14px;border:2px solid #dbad78;border-radius:16px;background:linear-gradient(145deg,#ffeac3,#fff9e5);color:#50341b;display:grid;gap:9px;margin-block:10px}.grandma-card p{margin:0;font-size:13px;line-height:1.45}.grandma-card button{border:0;padding:12px;border-radius:10px;background:#916145;color:#fff;font-weight:800}.grandma-card button:disabled{opacity:.45}.grandma-card #grandmaChapter{padding:10px;border-radius:10px;background:#f0d59d}.grandma-card .hidden{display:none}
+
+/* v0.9: world-first responsive HUD. No mission card obstructs the city on initial load. */
+.panel-toggle{display:flex;align-items:center;justify-content:space-between;gap:9px;width:100%;min-height:38px;background:#112b43e9;color:#effff4;border:1px solid #8ce8c64f;border-radius:12px;padding:9px 12px;font-size:12px;font-weight:850;white-space:nowrap}
+.quest-sidebar,.journey-card,.street-quest{z-index:8;box-shadow:0 5px 16px #07121b38;background:transparent;border:0;backdrop-filter:none;max-height:calc(100dvh - 130px);overflow-y:auto}
+.quest-sidebar{left:12px;top:calc(77px + env(safe-area-inset-top));width:176px;padding:0}
+.quest-sidebar.compact .quest-content,.journey-card.compact .journey-content,.street-quest.compact .street-content{display:none}
+.quest-sidebar.expanded,.journey-card.expanded,.street-quest.expanded{background:#0c1d30f1;border:1px solid #7fe1c34d;padding:8px}
+.quest-sidebar.expanded{width:242px}
+.quest-content{padding-top:8px}
+.journey-card{top:calc(125px + env(safe-area-inset-top));left:12px;width:176px;padding:0;gap:0}
+.journey-card strong{font-size:12px}.journey-content{display:flex;flex-direction:column;gap:7px;padding-top:8px}
+.journey-card.expanded{width:min(320px,40vw);max-width:none}
+.street-quest{top:calc(173px + env(safe-area-inset-top));left:12px;width:176px;padding:0;gap:0}
+.street-quest.expanded{width:min(325px,41vw)}
+.street-content{display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.grandma-card{position:absolute;left:12px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:8;width:min(265px,24vw);padding:10px;border-width:1px;box-shadow:0 6px 20px #14121144}
+.grandma-card p,.grandma-card #grandmaChapter{font-size:11px}.grandma-card button{padding:8px;font-size:11px}
+.world-map{top:calc(77px + env(safe-area-inset-top));right:12px;z-index:8;width:235px;height:205px;padding:7px;transition:height .2s,width .2s}
+.world-map.compact{height:auto;min-height:40px;width:132px;padding:3px 4px}.world-map.compact .map-viewport,.world-map.compact .map-foot,.world-map.compact .map-head strong,.world-map.compact #changePlaceButton{display:none}
+.map-head{display:flex;align-items:center;gap:5px}.map-head #toggleMap{font-size:11px;color:#e3f9ee;background:#26485a;border:0;padding:7px;border-radius:8px}.world-map.expanded{width:min(275px,28vw);height:250px}
+.geo-hud{top:auto;bottom:calc(16px + env(safe-area-inset-bottom));right:12px;left:auto;transform:none;max-width:245px;padding:8px 10px;font-size:10px}
+.code-controls,.hub-banner{display:none!important}
+.open-code-button{bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:10}
+.editor-panel{top:auto;bottom:12px;left:50%;right:auto;transform:translateX(-50%);width:min(810px,calc(100vw - 28px));height:min(52dvh,490px);border-radius:20px;padding:14px;z-index:12}
+.editor-panel.editor-full{height:calc(100dvh - 85px)}
+.editor-grip{display:block;width:34px;height:4px;background:#9cadbb77;border-radius:7px;margin:-7px auto 7px}.editor-expand{align-self:flex-end;background:#ffffff0a;border:1px solid #ffffff20;color:#c5eee4;padding:5px 10px;border-radius:8px;font-size:11px;margin-bottom:5px}
+.editor-panel .lesson-box{padding:8px}.editor-panel .lesson-box pre{font-size:11px}.editor-panel .mission-story{display:none}.editor-panel .task-line{margin-bottom:8px}.editor-panel h1{font-size:18px}.editor-panel .code-shell,.editor-panel .code-shell textarea{min-height:105px}
+@media(max-width:760px){
+ .topbar{padding:calc(6px + env(safe-area-inset-top)) 8px 0}.brand small{display:none}
+ .quest-sidebar{top:calc(58px + env(safe-area-inset-top));left:8px;width:112px;max-height:55dvh}
+ .journey-card{top:calc(102px + env(safe-area-inset-top));left:8px;width:112px;max-width:none}
+ .street-quest{top:calc(146px + env(safe-area-inset-top));left:8px;width:112px;max-width:none}
+ .quest-sidebar.expanded,.journey-card.expanded,.street-quest.expanded{width:min(285px,calc(100vw - 100px));max-width:none;max-height:46dvh}
+ .panel-toggle{padding:7px;font-size:10px;min-height:34px;gap:3px}
+ .world-map.compact{top:calc(58px + env(safe-area-inset-top));right:8px;width:100px;height:auto;min-height:34px}
+ .world-map.expanded{top:calc(58px + env(safe-area-inset-top));right:8px;width:min(250px,62vw);height:230px}
+ .geo-hud{top:auto;bottom:calc(65px + env(safe-area-inset-bottom));left:auto;right:8px;transform:none;max-width:200px;font-size:9px}.geo-hud small{display:none}
+ .grandma-card{bottom:calc(108px + env(safe-area-inset-bottom));left:8px;width:min(192px,49vw);padding:7px;gap:4px}.grandma-card strong{font-size:10px}.grandma-card p{font-size:9px}.grandma-card button{font-size:9px;padding:7px}
+ .open-code-button{bottom:calc(12px + env(safe-area-inset-bottom));white-space:nowrap}
+ .editor-panel{left:0;right:0;bottom:0;transform:none;width:100%;height:54dvh;padding:11px 13px calc(13px + env(safe-area-inset-bottom));border-radius:20px 20px 0 0}
+ .editor-panel.editor-full{height:94dvh}.editor-panel .lesson-box{margin-bottom:7px}.editor-panel .code-shell,.editor-panel .code-shell textarea{min-height:112px}
+}
+@media(orientation:landscape) and (max-height:540px){.quest-sidebar{top:63px}.journey-card{top:104px}.street-quest{top:145px}.grandma-card{display:none}.editor-panel{height:75dvh}.world-map.compact{top:61px}.geo-hud{bottom:12px}}

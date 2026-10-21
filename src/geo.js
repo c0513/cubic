@@ -30,7 +30,7 @@ export function parseOSM(elements){
     if(!type)return null;
     const xs=pts.map(p=>p[0]),zs=pts.map(p=>p[1]);return {type,points:pts,closed:Math.hypot(...[pts[0][0]-pts.at(-1)[0],pts[0][1]-pts.at(-1)[1]])<.03,
       minx:Math.min(...xs)-1,maxx:Math.max(...xs)+1,minz:Math.min(...zs)-1,maxz:Math.max(...zs)+1,
-      height:Math.max(2,Math.min(11,Math.round(Number(t['building:levels'])||3))),tags:t};
+      height:Math.max(2,Math.min(14,Math.round(Number(t['building:levels'])||3))),tags:t};
   }).filter(Boolean);
 }
 function toGridFloat(lat,lon){const x=R*lon*DEG,y=R*Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,lat))*DEG/2));return [x/GRID_METERS,-y/GRID_METERS]}
@@ -109,16 +109,32 @@ export class GeoVoxelGame extends VoxelGame {
     }
     return {obstacles,water};
   }
-  drawBuilding(mesh,dx,dz,worldX,worldZ,height){
+  drawBuilding(mesh,dx,dz,worldX,worldZ,height,tags={}){
     const r=hash(worldX,worldZ);
     const wallPal=[['#d4c1b2','#c7a592','#866b63'],['#c9d1d8','#adb6c1','#5e6c78'],['#dfcfaa','#c8b384','#78634d'],['#d6c7d8','#b79fbe','#6b5e78']];
-    const [wall,wall2,roof]=wallPal[Math.floor(r*wallPal.length)%wallPal.length];
+    const brick=String(tags['building:material']||tags['building:colour']||'').toLowerCase();
+    const useBrick=/brick|кирпич|red|brown|terracotta/.test(brick);
+    const panel=height>=6 && !useBrick;
+    const tower=height>=10;
+    const [baseWall,baseWall2,baseRoof]=wallPal[Math.floor(r*wallPal.length)%wallPal.length];
+    const wall=useBrick?'#a65e4b':panel?'#c2c2bd':baseWall;
+    const wall2=useBrick?'#87473b':panel?'#b0b2ae':baseWall2;
+    const roof=useBrick?'#634d47':panel?'#687780':baseRoof;
     const podium=r>.65?'#9f8e81':'#8f847a';
     const h=height*.58 + (r>.82?.35:0);
     mesh.box(dx,-.02,dz,1,.12,1,podium);
     mesh.box(dx,h/2,dz,.96,h,.96,wall);
     if(r>.45) mesh.box(dx,h*0.52,dz,.82,h*.92,.82,wall2);
     mesh.box(dx,h+.08,dz,1.04,.15,1.04,roof);
+    // Stronger residential identity: balcony slabs, panel seams, parapets and roof utility blocks.
+    if(panel){
+      for(let band=1;band<height;band+=2)mesh.box(dx,.1+band*.58,dz-.49,.94,.018,.024,'#8f999c');
+      mesh.box(dx,h+.17,dz,.78,.13,.78,'#7e8994');
+    }
+    if(tower){mesh.box(dx,h+.32,dz,.42,.42,.42,'#6b727e');}
+    if(useBrick){
+      for(let band=0;band<height;band+=2)mesh.box(dx,.1+band*.58,dz-.494,.9,.025,.018,'#d28b71');
+    }
     const winRows=Math.max(2,Math.round(height));
     for(let row=0;row<winRows;row++){
       const y=.36+row*.5;
@@ -134,11 +150,18 @@ export class GeoVoxelGame extends VoxelGame {
         mesh.box(dx+.492,y,dz+.15,.02,.14,.12,'#7fbbe9');
       }
     }
+    if(panel){
+      for(let floor=1;floor<height;floor+=2){
+        const y=.36+floor*.5;
+        mesh.box(dx+.12,y-.11,dz-.52,.40,.08,.17,'#777e83');
+        mesh.box(dx+.12,y-.02,dz-.53,.36,.22,.04,'#8db3c4');
+      }
+    }
     const doorDir=this.nearestRoadDirection(worldX,worldZ);
-    if(doorDir==='n') mesh.box(dx,h*.18,dz-.49,.18,.34,.03,'#5b4433');
-    else if(doorDir==='s') mesh.box(dx,h*.18,dz+.49,.18,.34,.03,'#5b4433');
-    else if(doorDir==='w') mesh.box(dx-.49,h*.18,dz,.03,.34,.18,'#5b4433');
-    else mesh.box(dx+.49,h*.18,dz,.03,.34,.18,'#5b4433');
+    if(doorDir==='n') {mesh.box(dx,.20,dz-.49,.18,.34,.03,'#5b4433');mesh.box(dx,.40,dz-.61,.39,.065,.20,roof);}
+    else if(doorDir==='s') {mesh.box(dx,.20,dz+.49,.18,.34,.03,'#5b4433');mesh.box(dx,.40,dz+.61,.39,.065,.20,roof);}
+    else if(doorDir==='w') {mesh.box(dx-.49,.20,dz,.03,.34,.18,'#5b4433');mesh.box(dx-.61,.40,dz,.20,.065,.39,roof);}
+    else {mesh.box(dx+.49,.20,dz,.03,.34,.18,'#5b4433');mesh.box(dx+.61,.40,dz,.20,.065,.39,roof);}
   }
   drawRoadDecor(mesh,dx,dz,worldX,worldZ){
     const mask=this.roadMask(worldX,worldZ);
@@ -198,7 +221,7 @@ export class GeoVoxelGame extends VoxelGame {
 
       if(visualType==='road') this.drawRoadDecor(m,dx,dz,x,z);
       else if(visualType==='sidewalk') this.drawSidewalk(m,dx,dz,x,z);
-      else if(visualType==='building') this.drawBuilding(m,dx,dz,x,z,c.height||4);
+      else if(visualType==='building') this.drawBuilding(m,dx,dz,x,z,c.height||4,c.tags||{});
       else if(visualType==='water'){
         m.box(dx,-.2,dz,1,.40,1,'#2d5378');
         m.tile(dx,dz,.0,'#43b9df',.92);

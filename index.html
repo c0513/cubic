@@ -21,10 +21,10 @@
       <div class="brand"><span class="brand-mark">🦖</span><span><strong>ДАНЧЕЗАВР</strong><small>GEO CODECRAFT <b>·</b> ЗЕМЛЯ</small></span></div>
       <div class="top-stats"><span class="stat-chip"><span>💎</span><b id="coinCount">0</b></span><span class="stat-chip progress-chip"><span>🏆</span><b id="progressCount">0 / 5</b></span><button class="sound-chip" id="helpButton" title="Управление">?</button></div>
     </header>
-    <aside class="quest-sidebar" id="questRail" aria-label="Список миссий">
+    <aside class="quest-sidebar compact" id="questRail" aria-label="Список миссий"><button type="button" id="toggleQuests" class="panel-toggle" aria-expanded="false">📚 Миссии <span id="questToggleIcon">▸</span></button><div class="quest-content">
       <div class="rail-header"><span class="eyebrow">КАРТА ПРИКЛЮЧЕНИЙ</span><strong>Миссии Python</strong></div>
       <div id="questList" class="quest-list"></div>
-      <div class="rail-bottom"><span class="orb orb-green"></span> Настоящая карта · Настоящий Python</div>
+      <div class="rail-bottom"><span class="orb orb-green"></span> Настоящая карта · Настоящий Python</div></div>
     </aside>
     <div class="hub-banner" id="hubBanner">
       <div class="eyebrow">🌍 МИР ОТКРЫТ</div>
@@ -33,23 +33,23 @@
     </div>
     <div class="geo-hud" id="geoHud"><span class="geo-indicator"></span><span id="geoStatus">Загружаем географию…</span><small id="geoCoordinates">Москва · Хорошёво-Мнёвники</small></div>
     <section class="grandma-card" aria-label="Встреча с бабушкой"><strong>👵 Бабушка ждёт Данчезавра</strong><p id="grandmaMessage">Заверши задания и доберись до дома.</p><button id="grandmaTalk" type="button" disabled>💬 Поговорить с бабушкой</button><div id="grandmaChapter" class="hidden"><strong>🎒 Глава 2: Исследователь Москвы</strong><p>Теперь ты можешь продолжать исследовать Москву с помощью Python. Новые миссии появятся в следующем обновлении.</p></div></section>
-<section class="journey-card" aria-label="Маршрут к бабушке"><strong>🏠 Миссия: в гости к бабушке</strong><small>От Народного Ополчения, 12к4 → Демьяна Бедного, 1к5</small><div class="journey-direction" id="goalDirection">📍 Ищем точный адрес финиша…</div><small id="goalDistance">Путь выбираешь ты · Москва</small><div class="journey-buttons"><button id="restartJourney" type="button">↺ С начала</button><button id="retryGoal" type="button">⌕ Найти бабушку</button><button id="openPanoramaButton" type="button">🏙 Реальные улицы</button></div></section>
-    <section class="street-quest" aria-label="Городские задания">
-      <div class="street-quest-heading"><strong>🏙 Городские квесты</strong><span id="streetCount">0 / 3</span></div>
+<section class="journey-card compact" id="journeyCard" aria-label="Маршрут к бабушке"><button type="button" class="panel-toggle" id="toggleJourney" aria-expanded="false">🧭 Маршрут <span>▸</span></button><div class="journey-content"><strong>🏠 Миссия: в гости к бабушке</strong><small>От Народного Ополчения, 12к4 → Демьяна Бедного, 1к5</small><div class="journey-direction" id="goalDirection">📍 Ищем точный адрес финиша…</div><small id="goalDistance">Путь выбираешь ты · Москва</small><div class="journey-buttons"><button id="restartJourney" type="button">↺ С начала</button><button id="retryGoal" type="button">⌕ Найти бабушку</button><button id="openPanoramaButton" type="button">🏙 Реальные улицы</button></div></div></section>
+    <section class="street-quest compact" id="streetQuest" aria-label="Городские задания">
+      <button type="button" class="panel-toggle" id="toggleStreet" aria-expanded="false">⭐ Квесты <span id="streetCount">0 / 3</span> ▸</button><div class="street-content"><div class="street-quest-heading"><strong>🏙 Городские квесты</strong></div>
       <div class="street-quest-title" id="streetTitle">Ищем задание…</div>
       <p id="streetDescription">Ищем доступные клетки рядом с тобой.</p>
       <div class="street-instruction"><span>🐍</span><span id="streetInstruction">move_forward()</span></div>
       <button id="streetHintButton" type="button">💡 Подсказка по маршруту</button>
-      <small>Светящийся маяк — игровой объект. Python напиши сам!</small>
+      <small>Светящийся маяк — игровой объект. Python напиши сам!</small></div>
     </section>
-    <section class="world-map" id="worldMap" aria-label="Настоящая карта OpenStreetMap">
-      <div class="map-head"><strong>🌍 РЕАЛЬНАЯ КАРТА</strong><button id="changePlaceButton" title="Сменить город">⌕ Сменить место</button></div>
+    <section class="world-map compact" id="worldMap" aria-label="Настоящая карта OpenStreetMap">
+      <div class="map-head"><button id="toggleMap" type="button" aria-expanded="false">🗺 Карта ▸</button><strong>🌍 РЕАЛЬНАЯ КАРТА</strong><button id="changePlaceButton" title="Сменить город">⌕ Сменить место</button></div>
       <div class="map-viewport" id="mapViewport"><div id="mapTiles" class="map-tiles"></div><div class="map-grid"></div><div class="map-goal hidden" id="mapGoal" title="Дом бабушки">🏠</div><div class="map-street hidden" id="mapStreet" title="Городское задание">⭐</div><div class="map-player">🦖</div></div>
       <div class="map-foot">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors <span id="mapMeters">1 клетка ≈ 18 м</span></div>
     </section>
     <button class="open-code-button" id="openCodeButton">🐍 НАПИСАТЬ КОД <span>→</span></button>
     <section class="editor-panel hidden" id="editorPanel" aria-label="Редактор Python">
-      <div class="editor-grip" aria-hidden="true"></div>
+      <div class="editor-grip" aria-hidden="true"></div><button id="editorExpand" type="button" class="editor-expand" aria-expanded="false">↕ Развернуть редактор</button>
       <div class="editor-head"><div class="eyebrow">🐍 PYTHON · МИССИЯ <span id="missionOrdinal">01</span></div><button class="icon-button" id="closeEditor" aria-label="Закрыть редактор">✕</button></div>
       <h1 id="missionTitle">Первая команда</h1>
       <div class="mission-sub" id="missionTopic">Команды и последовательность</div>

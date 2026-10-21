@@ -484,3 +484,25 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 spawnWorker();
 void goToPlace(place[0],place[1],false).then(loadGoal).catch(console.error);
 requestAnimationFrame(draw);
+
+// v0.9: panels are collapsed by default so the playable city remains visible.
+function attachPanelToggle(buttonId, panelId, expandedLabel){
+  const button=document.getElementById(buttonId),panel=document.getElementById(panelId);
+  if(!button||!panel)return;
+  button.addEventListener('click',()=>{
+    const expanded=panel.classList.toggle('expanded');
+    panel.classList.toggle('compact',!expanded);
+    button.setAttribute('aria-expanded',String(expanded));
+    if(expandedLabel)button.textContent=expanded?expandedLabel:'🗺 Карта ▸';
+  });
+}
+attachPanelToggle('toggleQuests','questRail');
+attachPanelToggle('toggleJourney','journeyCard');
+attachPanelToggle('toggleStreet','streetQuest');
+attachPanelToggle('toggleMap','worldMap','🗺 Свернуть карту');
+const editorExpand=document.getElementById('editorExpand');
+editorExpand?.addEventListener('click',()=>{
+  const full=document.getElementById('editorPanel').classList.toggle('editor-full');
+  editorExpand.setAttribute('aria-expanded',String(full));
+  editorExpand.textContent=full?'↕ Свернуть редактор':'↕ Развернуть редактор';
+});
