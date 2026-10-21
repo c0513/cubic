@@ -116,7 +116,7 @@ except SyntaxError as exc:
 except WorldError as exc:
     error=str(exc)
 except Exception as exc:
-    error=f'{type(exc).__name__}: {exc}'
+    error=('Неизвестная команда или опечатка: ' + str(exc) if isinstance(exc, NameError) else f'{type(exc).__name__}: {exc}')
 LAST_RESULT_JSON=json.dumps({
     'ok':error is None,
     'error':error,

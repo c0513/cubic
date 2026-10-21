@@ -23,3 +23,22 @@
 @media(max-width:1100px){.world-map{right:12px;width:250px;height:230px}.geo-hud{top:auto;bottom:calc(132px + env(safe-area-inset-bottom));left:auto;right:17px;transform:none}.hub-banner{top:18%;max-width:300px}}
 @media(max-width:720px){.world-map{top:calc(159px + env(safe-area-inset-top));right:8px;width:160px;height:170px;border-radius:13px;padding:6px}.map-head{font-size:7px}.map-head button{font-size:8px}.map-foot{font-size:7px}.map-foot span{display:none}.hub-banner{top:calc(337px + env(safe-area-inset-top));left:50%;max-width:80%;min-width:0}.geo-hud{left:10px;right:auto;top:auto;bottom:calc(110px + env(safe-area-inset-bottom));max-width:calc(100% - 20px);padding:7px;font-size:9px;white-space:nowrap}.geo-hud small{font-size:8px}.open-code-button{bottom:calc(55px + env(safe-area-inset-bottom));padding:12px 19px;font-size:12px}.code-controls{bottom:calc(8px + env(safe-area-inset-bottom));font-size:9px}.code-controls code{font-size:8px}.quest-sidebar{max-height:65px}.intro-card p{font-size:12px}}
 @media(orientation:landscape) and (max-height:650px){.world-map{top:calc(75px + env(safe-area-inset-top));height:145px;width:193px}.geo-hud{bottom:10px;right:9px;left:auto;transform:none}.open-code-button{bottom:25px}.code-controls{display:none}.hub-banner{display:none}.editor-panel{top:64px;bottom:6px}}
+
+/* Moscow journey v0.4 */
+.journey-card{position:absolute;z-index:9;top:102px;left:clamp(16px,19vw,290px);width:min(385px,calc(100vw - 34px));background:rgba(11,25,41,.9);border:1px solid rgba(255,204,123,.38);border-radius:17px;padding:14px 16px;color:#fff;box-shadow:0 14px 48px #06121b7d;display:flex;flex-direction:column;gap:6px;backdrop-filter:blur(12px)}
+.journey-card strong{color:#ffe6a6;font-size:15px}.journey-card small{color:#c4d6df;line-height:1.4;font-size:12px}
+.journey-direction{font-weight:800;font-size:17px;color:#9ff3d4;line-height:1.35}
+.journey-card button{background:#264456;color:#c7e7e7;border:1px solid #568483;border-radius:8px;padding:7px 10px;cursor:pointer;align-self:flex-start;font-size:12px}
+.lesson-box{margin:12px 0;padding:13px 15px;border-radius:14px;border:1px solid #397b88;background:rgba(20,61,76,.6);display:flex;flex-direction:column;gap:8px;color:#e5f6fb}
+.lesson-box strong{font-size:13px;color:#ffdf8f}.lesson-box small{font-size:11px;color:#b1d0da}
+.lesson-command,.lesson-box pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;margin:0;color:#b0ffd0}
+.lesson-command{font-size:16px;font-weight:800}.lesson-box p{margin:0;font-size:13px;line-height:1.5}.lesson-box pre{background:#071d2c;padding:8px;border-radius:9px;font-size:12px}
+.map-goal{position:absolute;z-index:6;font-size:23px;filter:drop-shadow(0 0 4px white);pointer-events:none}
+@media(max-width:760px){.journey-card{top:73px;left:10px;width:min(342px,calc(100vw - 20px));padding:10px 12px;gap:4px}.journey-card strong{font-size:12px}.journey-direction{font-size:14px}.journey-card small{font-size:10px}.journey-card button{font-size:10px;padding:5px 8px}.lesson-box{padding:10px}}
+
+/* Layout polishing: leave center of voxel scene visible on desktop and on iPad. */
+.hub-banner{display:none}
+.journey-card{left:290px;top:100px;max-width:385px}
+.journey-buttons{display:flex;flex-wrap:wrap;gap:8px}
+@media(min-width:761px) and (max-width:1100px){.journey-card{left:230px;top:100px;max-width:360px}}
+@media(max-width:760px){.journey-card{top:calc(149px + env(safe-area-inset-top));left:8px;width:calc(100vw - 186px);max-width:210px;padding:9px}.journey-card strong{font-size:10px}.journey-card small{font-size:9px}.journey-direction{font-size:12px}.journey-card button{font-size:9px}.journey-buttons{gap:4px}}

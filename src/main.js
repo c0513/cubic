@@ -1,10 +1,11 @@
 import { GeoVoxelGame, parseOSM, gridToLatLon, toGrid, GRID_METERS } from './geo.js';
 import { LEVELS, STORAGE_KEY } from './levels.js';
+import { FIRST_JOURNEY, resolveGoal, directionToCell, finishedGoal, metersApart } from './route.js';
 
 const $ = id => document.getElementById(id);
 const game = new GeoVoxelGame($('game'));
 const DIR_NAMES = ['Восток →', 'Юг ↓', 'Запад ←', 'Север ↑'];
-const HOME = [55.7517, 37.6287]; // Demo: Moscow. Not the device GPS.
+const HOME = [FIRST_JOURNEY.start.lat,FIRST_JOURNEY.start.lon]; // Exact selected start address, not GPS.
 const saved = (() => { try {return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');}catch{return null;} })();
 let place = saved?.place && Array.isArray(saved.place) ? saved.place : HOME;
 let completed = Array.isArray(saved?.completed) ? saved.completed.filter(n=>Number.isInteger(n) && n>=0 && n<LEVELS.length) : [];
@@ -13,9 +14,15 @@ let busy = false, worker = null, ready = false, workerTicket = 0, runTimer = nul
 let selected = Math.min(LEVELS.length, completed.length), frameStart = 0, mapRefresh = 0, fetchCenter = null, fetchID = 0;
 let touchX = null, toastTimer = null;
 let editorWasOpen = false;
+let codeDrafts = saved?.codeDrafts && typeof saved.codeDrafts==='object' ? saved.codeDrafts : {};
+let goalCoords = Array.isArray(saved?.goalCoords) && saved.goalCoords.length===2 && saved.goalVerified===true ? saved.goalCoords : null;
+let goalCell = goalCoords ? toGrid(...goalCoords) : null;
+let questTurn=0, questMoves=0;
+
 
 function save(){
-  try {localStorage.setItem(STORAGE_KEY, JSON.stringify({place,completed,coins, position:game.playerGlobal,heading:game.heading,crystalTaken:game.crystalTaken,bridgeBuilt:game.bridgeBuilt}));}
+  try {localStorage.setItem(STORAGE_KEY, JSON.stringify({place,completed,coins, position:game.playerGlobal,heading:game.heading,crystalTaken:game.crystalTaken,bridgeBuilt:game.bridgeBuilt,
+    goalCoords,goalVerified:!!goalCoords,codeDrafts}));}
   catch (_) {}
 }
 function showToast(msg){
@@ -57,17 +64,20 @@ function updateQuest(){
   $('missionTopic').textContent=sandbox?'Твой код — твои маршруты':level.topic;
   $('missionStory').textContent=sandbox?'Ты прошёл обучение! Пиши свои программы на Python, чтобы путешествовать по настоящей карте, смотреть дороги и постройки.':level.story;
   $('missionTask').textContent=sandbox?'Придумай собственный маршрут — команды работают и после прохождения всех миссий.':level.task;
-  $('codeInput').value=sandbox?'# Продолжай приключение!\nfor i in range(3):\n    move_forward()':level.starter;
+  $('codeInput').value=codeDrafts[selected] ?? (sandbox?'# Свободный мир — твой Python!\n':level.starter);
   updateLines();
   $('hubHeadline').textContent=sandbox?'Мир открыт для исследований':`Миссия ${selected+1}: ${level.name}`;
-  $('hubDescription').textContent='Одна клетка = один шаг по реальной географической сетке';
+  $('hubDescription').textContent='Старт: Народного Ополчения, 12к4 · цель: к бабушке';
+  $('lessonCommand').textContent=sandbox?'Твои программы':level.command;
+  $('lessonExplain').textContent=sandbox?'Экспериментируй с командами, циклами for, проверками if и функциями.':level.explain;
+  $('lessonExample').textContent=sandbox?'if front_is_clear():\n    move_forward()':level.example;
   feedback('Пиши Python и запускай. Герой повторит команды на карте.');
 }
 function updateLines(){
   const el=$('codeInput'),count=Math.max(5,el.value.split('\n').length);
   $('lineGutter').textContent=Array.from({length:count},(_,i)=>i+1).join('\n');
 }
-$('codeInput').addEventListener('input',updateLines);
+$('codeInput').addEventListener('input',()=>{codeDrafts[selected]=$('codeInput').value;updateLines();save();});
 $('codeInput').addEventListener('scroll',()=>{$('lineGutter').scrollTop=$('codeInput').scrollTop;});
 $('codeInput').addEventListener('keydown',e=>{
   const el=e.currentTarget;
@@ -101,23 +111,24 @@ $('nextButton').addEventListener('click',()=>{
 $('victoryExplore').addEventListener('click',()=>{$('victory').classList.add('hidden');closeEditor();});
 $('hintButton').addEventListener('click',()=>feedback(LEVELS[selected]?.hint||'Используй циклы for и команды move_forward(), turn_left(), turn_right().'));
 $('solutionButton').addEventListener('click',()=>{
-  const solution=LEVELS[selected]?.solution;
-  if(solution){$('codeInput').value=solution;updateLines();feedback('Это рабочий пример. Попробуй его изменить, а не просто копировать!');}
-  else feedback('В свободном мире можно составить любой маршрут.');
+  const example=LEVELS[selected]?.example;
+  feedback(example ? `Пример (в редактор не вставляем): ${example.replaceAll('\n',' / ')}` : 'Составь собственный маршрут.', 'info');
 });
 
 function resetCurrentMission(){
-  const n=Math.min(completed.length,LEVELS.length);
-  const starts=[0,-3,-4,-5];
-  if(n<4){
-    game.playerGlobal=[game.spawn[0],game.spawn[1]+starts[n]];
-    game.heading=3;game.crystalTaken=n>=2;game.bridgeBuilt=n>=3;
-    game.geoCenter=[...game.playerGlobal];game.rebuild();
-  }
-  updateQuest();updateMap();save();
-  showToast('Миссия возвращена в начальную точку.');
+  codeDrafts[selected]=LEVELS[selected]?.starter || '# Напиши новую программу!\n';
+  $('codeInput').value=codeDrafts[selected];updateLines();save();
+  feedback('Редактор очищен. Положение Данчезавра на карте сохранено.');
 }
 $('resetButton').addEventListener('click',()=>{if(!busy)resetCurrentMission();});
+$('retryGoal').addEventListener('click',()=>{void loadGoal();});
+$('restartJourney').addEventListener('click',async()=>{
+  if(busy)return;
+  if(!window.confirm('Начать путешествие из дома заново? Сбросится прохождение, но не уроки и код.'))return;
+  completed=[];coins=0;selected=0;codeDrafts={};
+  await goToPlace(...HOME,true);game.goalGlobal=goalCell;
+  updateQuest();updateGoalUI();showToast('Ты вернулся на Народного Ополчения, 12к4');
+});
 function workerStatus(message){$('pythonStatus').textContent=message;}
 function spawnWorker(){
   ready=false;
@@ -147,7 +158,7 @@ function onWorkerMessage({data}){
     toggleBusy(false);
     if(data.print?.trim())feedback(`Вывод программы: ${data.print.trim()}`,'info');
     else feedback(steps.length?`Готово! Выполнено действий: ${steps.length}.`:'Код выполнен, но персонаж остался на месте.','good');
-    checkQuest();updateMap();save();
+    checkQuest(steps,$('codeInput').value);updateMap();save();
   });
 }
 async function animateActions(actions){
@@ -173,20 +184,49 @@ $('runButton').addEventListener('click',()=>{
     spawnWorker();
   },8500);
 });
-function checkQuest(){
-  if(selected>=4)return;
-  const [sx,sz]=game.spawn,[px,pz]=game.playerGlobal;
-  const success=[()=>px===sx&&pz<=sz-3,
-    ()=>game.crystalTaken,
-    ()=>game.bridgeBuilt&&px===sx&&pz<=sz-5,
-    ()=>px===sx&&pz<=sz-9][selected]();
-  if(!success)return;
-  const level=LEVELS[selected];completed.push(selected);coins+=level.reward;selected=Math.min(4,completed.length);
+function checkQuest(actions,code){
+  if(selected>=LEVELS.length)return;
+  const current=selected,moves=actions.filter(x=>x.op==='move').length;
+  const turns=actions.filter(x=>x.op==='turn').length;
+  const logic=[
+    ()=> moves>=1,
+    ()=> moves>=1 && turns>=1,
+    ()=> moves>=2 && /\bfor\b/.test(code) && /\brange\s*\(/.test(code),
+    ()=> /\bif\s+front_is_clear\s*\(/.test(code) && /\bmove_forward\s*\(/.test(code),
+    ()=> finishedGoal(game.playerGlobal,goalCell,2)
+  ];
+  if(!logic[current]()){
+    if(current===4)feedback(goalCell?'Продолжай маршрут. Компас укажет направление к бабушке.':'Финиш пока не определён: нужно подтвердить точные координаты дома бабушки.','info');
+    return;
+  }
+  const level=LEVELS[current];completed.push(current);coins+=level.reward;selected=Math.min(LEVELS.length,completed.length);
   renderQuests();
-  $('victoryText').textContent=`${level.name}: отлично! Ты выполнил миссию настоящим Python.`;
+  $('victoryText').textContent=current===4?'Ура! Данчезавр пришёл в гости к бабушке, а маршрут придумал ты сам!':`${level.name}: отлично! Сам написал работающий Python.`;
   $('victoryReward').textContent=`+${level.reward} 💎`;
-  $('nextButton').textContent=selected===4?'Открыть свободный мир →':'Следующая миссия →';
+  $('nextButton').textContent=selected===LEVELS.length?'Играть дальше →':'Следующая миссия →';
   $('victory').classList.remove('hidden');save();
+}
+function updateGoalUI(){
+  if(!game.playerGlobal)return;
+  const el=$('goalDirection'),distance=$('goalDistance');
+  if(!goalCell){el.textContent='⏳ Ищем точную координату корпуса 1к5';distance.textContent='Миссия доступна после подтверждения адреса';return;}
+  const [x,z]=game.playerGlobal,dir=directionToCell(x,z,...goalCell),latlon=gridToLatLon(x,z);
+  const meters=Math.round(metersApart(latlon,goalCoords));
+  el.textContent=finishedGoal([x,z],goalCell,2)?'🎉 Ты у бабушки!':`🧭 К бабушке: ${dir}`;
+  distance.textContent=`До цели по прямой ≈ ${meters} м · маршрут по улицам длиннее`;
+}
+async function loadGoal(){
+  if(goalCoords){game.setGoal(goalCell);updateGoalUI();return;}
+  try{
+    const point=await resolveGoal();
+    goalCoords=[point.lat,point.lon];goalCell=toGrid(...goalCoords);
+    game.setGoal(goalCell);updateGoalUI();updateMap();save();
+    showToast('Адрес бабушки найден на карте!');
+  }catch(e){
+    $('goalDirection').textContent='📍 Адрес корпуса пока не удалось определить';
+    $('goalDistance').textContent='Точные данные OSM недоступны. Нажми «Найти бабушку» ещё раз.';
+    console.warn('Cannot resolve exact destination',e);
+  }
 }
 
 // OpenStreetMap widget: visual context only; never implies the avatar's GPS position.
@@ -199,6 +239,7 @@ function updateMap(){
   if(!game.playerGlobal)return;
   const [lat,lon]=gridToLatLon(...game.playerGlobal);
   $('geoCoordinates').textContent=`${lat.toFixed(5)}°, ${lon.toFixed(5)}° · ${DIR_NAMES[game.heading]}`;
+  updateGoalUI();
   const ground= Math.round(GRID_METERS*Math.cos(lat*Math.PI/180));
   $('mapMeters').textContent=`1 клетка ≈ ${ground} м`;
   const zoom=16,[worldX,worldY]=slippy(lat,lon,zoom),tx=Math.floor(worldX/256),ty=Math.floor(worldY/256);
@@ -223,6 +264,13 @@ function updateMap(){
   $('mapViewport').style.setProperty('--cell-size',`${spacing}px`);
   $('mapViewport').style.setProperty('--cell-offset-x',`${((spacing/2-worldX%spacing)%spacing+spacing)%spacing}px`);
   $('mapViewport').style.setProperty('--cell-offset-y',`${((spacing/2-worldY%spacing)%spacing+spacing)%spacing}px`);
+  const goal=$('mapGoal');
+  if(goalCoords){
+    const [goalWX,goalWY]=slippy(...goalCoords,zoom);
+    const left=width/2+goalWX-worldX,top=height/2+goalWY-worldY;
+    if(left>=12&&left<=width-12&&top>=12&&top<=height-12){goal.classList.remove('hidden');goal.style.left=`${left}px`;goal.style.top=`${top}px`;}
+    else goal.classList.add('hidden');
+  }else goal.classList.add('hidden');
 }
 function draw(now){
   const delta=Math.min(.1,(now-frameStart)/1000||.016);frameStart=now;
@@ -250,7 +298,7 @@ async function maybeLoadRealWorld(force=false){
   const query=`[out:json][timeout:18];(way["building"]${bbox};way["highway"]${bbox};way["natural"="water"]${bbox};way["waterway"="riverbank"]${bbox};way["leisure"="park"]${bbox};way["landuse"~"forest|grass|meadow|recreation_ground|reservoir"]${bbox};);out geom;`;
   const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),19000);
   try{
-    const response=await fetch('https://overpass.kumi.systems/api/interpreter',{method:'POST',body:new URLSearchParams({data:query}),signal:controller.signal});
+    const response=await fetch('https://overpass.private.coffee/api/interpreter',{method:'POST',body:new URLSearchParams({data:query}),signal:controller.signal});
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     const json=await response.json();
     if(currentID!==fetchID)return;
@@ -269,7 +317,7 @@ async function maybeLoadRealWorld(force=false){
 
 async function goToPlace(lat,lon,reset=true){
   place=[lat,lon];fetchID++;fetchCenter=null;
-  game.setPlace(lat,lon);
+  game.setPlace(lat,lon);game.goalGlobal=goalCell;
   if(reset){completed=[];coins=0;selected=0;updateQuest();}
   else{
     game.playerGlobal=saved?.position?.length===2?saved.position:[...game.spawn];
@@ -315,5 +363,5 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('./sw.js').catch(console.warn);
 }
 spawnWorker();
-void goToPlace(place[0],place[1],false).catch(console.error);
+void goToPlace(place[0],place[1],false).then(loadGoal).catch(console.error);
 requestAnimationFrame(draw);

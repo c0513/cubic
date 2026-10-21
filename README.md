@@ -83,3 +83,15 @@ node --check src/engine.js
 ## Источники и авторство
 
 Игра/3D-визуал сделаны заново. Географические данные и карта: © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), [ODbL](https://opendatacommons.org/licenses/odbl/). Геоданные через Overpass API; геокодирование через Nominatim. Python via [Pyodide](https://pyodide.org/) (CPython/WASM). Подход к географическому преобразованию вдохновлён [louis-e/arnis](https://github.com/louis-e/arnis), код проекта не копировался.
+
+
+## Moscow family journey, v0.4 (21 Oct 2026)
+
+- Start: Народного Ополчения, 12к4 (verified map point: 55.772087, 37.479654).
+- Goal: Демьяна Бедного, 1к5 — resolved **at runtime only if that exact building is geocoded**. No fabricated coordinates. Nominatim then Overpass address-tag fallback.
+- Distance + cardinal compass hint; protagonist movement remains entirely user-authored Python (`move_forward()`, `turn_right()`, `for`, `if`).
+- Five incremental Russian lessons; examples are *not automatically inserted into the editor*.
+- Position, completed quests and code drafts saved to localStorage. Restart separately resets the journey.
+- Voxels represent OpenStreetMap shapes when Overpass succeeds; when unavailable the world explicitly switches to *stylized* demo terrain. This is a game map, not a pedestrian navigation system.
+- The public OSM server is best effort. For substantial usage, cache geographic extracts or adopt a map data provider; public services have availability and rate policies.
+- Keep sensitive family relationships and actual home locations out of promotional screenshots and screenshots shared publicly.

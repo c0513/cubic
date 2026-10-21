@@ -19,7 +19,7 @@
     <div class="sky-glow" aria-hidden="true"></div>
     <header class="topbar">
       <div class="brand"><span class="brand-mark">🦖</span><span><strong>ДАНЧЕЗАВР</strong><small>GEO CODECRAFT <b>·</b> ЗЕМЛЯ</small></span></div>
-      <div class="top-stats"><span class="stat-chip"><span>💎</span><b id="coinCount">0</b></span><span class="stat-chip progress-chip"><span>🏆</span><b id="progressCount">0 / 4</b></span><button class="sound-chip" id="helpButton" title="Управление">?</button></div>
+      <div class="top-stats"><span class="stat-chip"><span>💎</span><b id="coinCount">0</b></span><span class="stat-chip progress-chip"><span>🏆</span><b id="progressCount">0 / 5</b></span><button class="sound-chip" id="helpButton" title="Управление">?</button></div>
     </header>
     <aside class="quest-sidebar" id="questRail" aria-label="Список миссий">
       <div class="rail-header"><span class="eyebrow">КАРТА ПРИКЛЮЧЕНИЙ</span><strong>Миссии Python</strong></div>
@@ -31,10 +31,11 @@
       <strong id="hubHeadline">Весь мир — твоя карта</strong>
       <small id="hubDescription">Пиши Python, чтобы перемещаться по реальным координатам</small>
     </div>
-    <div class="geo-hud" id="geoHud"><span class="geo-indicator"></span><span id="geoStatus">Загружаем географию…</span><small id="geoCoordinates">55.7517°, 37.6287°</small></div>
+    <div class="geo-hud" id="geoHud"><span class="geo-indicator"></span><span id="geoStatus">Загружаем географию…</span><small id="geoCoordinates">Москва · Хорошёво-Мнёвники</small></div>
+    <section class="journey-card" aria-label="Маршрут к бабушке"><strong>🏠 Миссия: в гости к бабушке</strong><small>От Народного Ополчения, 12к4 → Демьяна Бедного, 1к5</small><div class="journey-direction" id="goalDirection">📍 Ищем точный адрес финиша…</div><small id="goalDistance">Путь выбираешь ты · Москва</small><div class="journey-buttons"><button id="restartJourney" type="button">↺ С начала</button><button id="retryGoal" type="button">⌕ Найти бабушку</button></div></section>
     <section class="world-map" id="worldMap" aria-label="Настоящая карта OpenStreetMap">
       <div class="map-head"><strong>🌍 РЕАЛЬНАЯ КАРТА</strong><button id="changePlaceButton" title="Сменить город">⌕ Сменить место</button></div>
-      <div class="map-viewport" id="mapViewport"><div id="mapTiles" class="map-tiles"></div><div class="map-grid"></div><div class="map-player">🦖</div></div>
+      <div class="map-viewport" id="mapViewport"><div id="mapTiles" class="map-tiles"></div><div class="map-grid"></div><div class="map-goal hidden" id="mapGoal" title="Дом бабушки">🏠</div><div class="map-player">🦖</div></div>
       <div class="map-foot">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors <span id="mapMeters">1 клетка ≈ 18 м</span></div>
     </section>
     <button class="open-code-button" id="openCodeButton">🐍 НАПИСАТЬ КОД <span>→</span></button>
@@ -45,11 +46,12 @@
       <div class="mission-sub" id="missionTopic">Команды и последовательность</div>
       <div class="mission-story" id="missionStory"></div>
       <div class="task-line"><span>🎯</span><span id="missionTask"></span></div>
+      <section class="lesson-box" aria-label="Учебник команды"><strong>📚 Учимся писать Python</strong><div class="lesson-command" id="lessonCommand">move_forward()</div><p id="lessonExplain">Каждая команда — это действие.</p><small>Пример для изучения (он не вводится в редактор):</small><pre id="lessonExample">move_forward()</pre><small>👇 Вводи команды в main.py самостоятельно</small></section>
       <div class="editor-title"><div><span class="code-dot"></span> <strong>main.py</strong><span class="editor-lang">Python 3</span></div><span id="pythonStatus" class="python-status">Подключаем Python…</span></div>
       <div class="code-shell"><div class="line-gutter" id="lineGutter">1<br>2<br>3<br>4<br>5</div><textarea id="codeInput" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Напиши код Python"></textarea></div>
       <div class="editor-actions"><button id="runButton" class="primary-button">▶ Запустить код</button><button id="resetButton" class="outline-button" title="Вернуть начало">↺</button></div>
       <div class="feedback" id="feedback" role="status"><span>💡</span><p>Напиши команды и нажми «Запустить код».</p></div>
-      <div class="editor-tools"><button id="hintButton">💡 Подсказка</button><button id="solutionButton">👀 Решение</button><button id="backToHub">🌍 На карту</button></div>
+      <div class="editor-tools"><button id="hintButton">💡 Подсказка</button><button id="solutionButton">📖 Пример</button><button id="backToHub">🌍 На карту</button></div>
       <div class="editor-foot">Настоящий CPython (Pyodide) · Работает в браузере · Для запуска нужен интернет</div>
     </section>
     <div class="code-controls" id="codeControls"><span>🎮 Управление миром — командами Python</span><div><code>move_forward()</code><code>turn_left()</code><code>collect()</code></div></div>
@@ -59,8 +61,8 @@
         <span class="intro-star">✦ НОВОЕ ПРИКЛЮЧЕНИЕ ✦</span>
         <div class="intro-mascot" aria-hidden="true">🦖</div>
         <h2>Добро пожаловать в<br><em>Codecraft!</em></h2>
-        <p>Твой мир. Твои правила. Твой <strong>Python.</strong><br>Путешествуй по настоящей карте Земли, представленной кубиками, и двигайся только с помощью кода.</p>
-        <div class="intro-benefits"><span>🌍 Реальная карта</span><span>🐍 Python</span><span>💎 4 миссии</span></div>
+        <p>Твой мир. Твои правила. Твой <strong>Python.</strong><br>Сегодня отправляемся по улицам Москвы к бабушке. Сам печатай команды — динозавр будет идти по клеткам настоящей карты!</p>
+        <div class="intro-benefits"><span>🌍 Реальная карта</span><span>🐍 Python</span><span>🧠 5 миссий</span></div>
         <button class="primary-button huge" id="startButton">🚀 Начать приключение <span>→</span></button>
         <button class="plain-button" id="exploreButton">Посмотреть карту</button>
       </div>

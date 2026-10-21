@@ -37,7 +37,7 @@ export function parseOSM(elements){
 function toGridFloat(lat,lon){const x=R*lon*DEG,y=R*Math.log(Math.tan(Math.PI/4+Math.max(-85,Math.min(85,lat))*DEG/2));return [x/GRID_METERS,-y/GRID_METERS]}
 
 export class GeoVoxelGame extends VoxelGame {
-  constructor(canvas){super(canvas);this.mode='geo';this.geoCenter=[0,0];this.geoFeatures=[];this.dataMode='stylized';this.geoTiles=new Map();this.progress={completed:[],coins:0};this.spawn=[0,0];this.heading=3;this.bridgeBuilt=false;this.crystalTaken=false;this.player={x:0,z:0,facing:3,yaw:this.facingYaw(3),jump:0};this.camYaw=.48;}
+  constructor(canvas){super(canvas);this.mode='geo';this.geoCenter=[0,0];this.geoFeatures=[];this.dataMode='stylized';this.geoTiles=new Map();this.progress={completed:[],coins:0};this.spawn=[0,0];this.heading=3;this.bridgeBuilt=false;this.crystalTaken=false;this.goalGlobal=null;this.goalReached=false;this.player={x:0,z:0,facing:3,yaw:this.facingYaw(3),jump:0};this.camYaw=.48;}
   setPlace(lat,lon){
     const g=toGrid(lat,lon);this.spawn=[...g];this.playerGlobal=[...g];this.heading=3;
     this.geoCenter=[...g];this.geoFeatures=[];this.geoTiles.clear();this.dataMode='stylized';
@@ -59,9 +59,8 @@ export class GeoVoxelGame extends VoxelGame {
         if(f.type==='water'&&area)c={type:'water',height:0};
       }
     }
-    // Training objects are deliberate game features, not claims about OSM geography.
-    if(x===this.spawn[0]&&z<=this.spawn[1]&&z>=this.spawn[1]-10){c={type:'path',height:0};}
-    if(x===this.spawn[0]&&z===this.spawn[1]-5&&!this.bridgeBuilt)c={type:'water',height:0,tutorial:true};
+    // Ensure the initial spawn is walkable even if the address point falls inside a building polygon.
+    if(x===this.spawn[0]&&z===this.spawn[1])c={type:'path',height:0};
     this.geoTiles.set(k,c);return c;
   }
   obstaclesAround(radius=15){const [x,z]=this.playerGlobal;const obstacles=[],water=[];
@@ -88,14 +87,12 @@ export class GeoVoxelGame extends VoxelGame {
         for(let j=0;j<c.height;j++)m.box(dx,.42+j*.53,dz-.502,.25,.18,.015,'#79b8c5');
       }
       if(c.type==='water')m.box(dx,.035,dz,.92,.06,.92,'#31b5dc');
-      const tutorial=x===sx&&z<=sz&&z>=sz-10;
-      if((c.type==='grass'||c.type==='park')&&!tutorial&&r>.9){
+      if((c.type==='grass'||c.type==='park')&&r>.93){
         m.box(dx,.40,dz,.26,.9,.28,'#785b3d');
         m.box(dx,1.15,dz,1.0,1.1,1.0,r>.96?'#35b57a':'#2a985b');
         m.box(dx,1.84,dz,.6,.45,.6,'#45c17a');
       }
-      if(tutorial&&z!==sz-5){m.box(dx,.015,dz,.58,.03,.58,'#d5c59a');}
-      if(x===sx&&z===sz-9){m.box(dx,.12,dz,.8,.25,.8,'#65f6bd');m.box(dx,.29,dz,.45,.12,.45,'#ecffae');}
+
     }
     if(this.bridgeBuilt){m.box(sx-cx,.1,sz-5-cz,.97,.22,.97,'#ba915d');}
     this.upload(m);
@@ -112,13 +109,21 @@ export class GeoVoxelGame extends VoxelGame {
     else if(a.op==='collect'){this.crystalTaken=true;}
     else if(a.op==='place'){this.bridgeBuilt=true;this.rebuild();}
   }
-  makeDynamic(t){const m=new Mesh();this.makeCharacter(m,this.player.x,this.player.z,this.player.yaw,t);const [sx,sz]=this.spawn,[cx,cz]=this.geoCenter;
-    if(!this.crystalTaken&&Math.abs(sx-cx)<HALF&&Math.abs(sz-4-cz)<HALF){const x=sx-cx,z=sz-4-cz,h=.59+Math.sin(t*2.7)*.09;m.box(x,h,z,.39,.56,.39,'#40eafd',t*.8);m.box(x,h+.28,z,.24,.14,.24,'#ddffff',t*.8);}
-    if(Math.abs(sx-cx)<HALF&&Math.abs(sz-9-cz)<HALF){const x=sx-cx,z=sz-9-cz;m.box(x,.64+Math.sin(t*1.8)*.08,z,.38,1.2,.38,'#65f6b5',t*.7);}
+  makeDynamic(t){
+    const m=new Mesh();this.makeCharacter(m,this.player.x,this.player.z,this.player.yaw,t);
+    if(this.goalGlobal){
+      const [cx,cz]=this.geoCenter,x=this.goalGlobal[0]-cx,z=this.goalGlobal[1]-cz;
+      if(Math.abs(x)<HALF&&Math.abs(z)<HALF){
+        const h=.9+Math.sin(t*2)*.16;
+        m.box(x,h,z,.24,1.7,.24,'#efb756',t*.20);
+        m.box(x,h+1.10,z,.95,.8,.95,'#ffd879',t*.35);
+        m.box(x,h+1.55,z,.47,.29,.47,'#fff8db');
+      }
+    }
     return m;
   }
-  getSnapshot(){const {obstacles,water}=this.obstaclesAround();return {origin:[...this.playerGlobal],facing:this.heading,obstacles,water,
-      crystal:this.crystalTaken?[]:[[this.spawn[0],this.spawn[1]-4]], bridgeCell:[this.spawn[0],this.spawn[1]-5],
-      bridgeBuilt:this.bridgeBuilt,maxRange:15,boards:3};}
+  getSnapshot(){const {obstacles,water}=this.obstaclesAround(19);return {origin:[...this.playerGlobal],facing:this.heading,obstacles,water,
+      crystal:[],bridgeCell:[this.spawn[0],this.spawn[1]-5], bridgeBuilt:this.bridgeBuilt,maxRange:15,boards:3};}
+  setGoal(cell){this.goalGlobal=cell;this.goalReached=false;}
   nearRefresh(){return Math.max(Math.abs(this.playerGlobal[0]-this.geoCenter[0]),Math.abs(this.playerGlobal[1]-this.geoCenter[1]))>=8;}
 }
