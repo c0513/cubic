@@ -49,8 +49,9 @@ function lookAt(eye,target,up=[0,1,0]) {
 export class VoxelGame {
   constructor(canvas){
     this.canvas=canvas;
-    const gl=canvas.getContext('webgl',{alpha:false,antialias:true,powerPreference:'high-performance'});
-    if(!gl) throw new Error('Для 3D-игры нужен браузер с WebGL.');
+    const gl=canvas.getContext('webgl',{alpha:false,antialias:true,powerPreference:'high-performance'}) || canvas.getContext('experimental-webgl',{alpha:false,antialias:false});
+    if(!gl) throw new Error('WebGL недоступен в браузере.');
+    canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();console.error('WebGL context lost');},{passive:false});
     this.gl=gl;
     const vs=`attribute vec3 a_pos;attribute vec3 a_color;uniform mat4 u_proj;uniform mat4 u_view;varying vec3 v_color;varying float v_distance;void main(){vec4 camera=u_view*vec4(a_pos,1.0);gl_Position=u_proj*camera;v_color=a_color;v_distance=length(camera.xyz);}`;
     const fs=`precision mediump float;varying vec3 v_color;varying float v_distance;uniform vec3 u_fog;void main(){float fog=smoothstep(17.0,42.0,v_distance);gl_FragColor=vec4(mix(v_color,u_fog,fog),1.0);}`;

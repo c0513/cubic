@@ -6,7 +6,17 @@ import { canMeetGrandma, grandmaMessage } from './grandma.js';
 import { STREET_QUESTS, planStreetQuest, evaluateStreetQuest, reachableCells, sameCell, streetHint } from './street-quests.js';
 
 const $ = id => document.getElementById(id);
-const game = new GeoVoxelGame($('game'));
+let game;
+try {
+  game = new GeoVoxelGame($('game'));
+} catch(error) {
+  const note=document.createElement('div');
+  note.id='webglRecovery';note.setAttribute('role','alert');
+  note.style.cssText='position:fixed;z-index:99999;top:18%;left:24%;right:24%;background:#122433;color:white;border:2px solid #ff916d;border-radius:16px;padding:24px;font:16px system-ui;line-height:1.5';
+  note.textContent='Не удалось запустить 3D-город: '+String(error?.message||error)+' . В Chrome проверь включение аппаратного ускорения и WebGL.';
+  document.body.appendChild(note);
+  throw error;
+}
 const DIR_NAMES = ['Восток →', 'Юг ↓', 'Запад ←', 'Север ↑'];
 const HOME = [FIRST_JOURNEY.start.lat,FIRST_JOURNEY.start.lon]; // Exact selected start address, not GPS.
 const saved = (() => { try {return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');}catch{return null;} })();
@@ -425,9 +435,23 @@ function updateMap(){
     else goal.classList.add('hidden');
   }else goal.classList.add('hidden');
 }
+let renderStopped=false;
+function renderFailure(err){
+  if(renderStopped)return;
+  renderStopped=true;
+  console.error('Codecraft WebGL render failed:',err);
+  const msg=document.createElement('div');msg.setAttribute('role','alert');msg.id='renderError';
+  msg.style.cssText='position:absolute;z-index:120;top:20%;left:15%;right:15%;padding:20px;background:#172638;color:#fff;border:2px solid #ff7f67;border-radius:14px;font:15px system-ui';
+  msg.textContent='Ошибка 3D-мира: '+String(err?.message||err)+' . Отправь эту ошибку разработчику.';
+  $('game').parentElement.appendChild(msg);
+}
 function draw(now){
-  const delta=Math.min(.1,(now-frameStart)/1000||.016);frameStart=now;
-  game.render(now,delta);requestAnimationFrame(draw);
+  if(renderStopped)return;
+  try {
+    const delta=Math.min(.1,(now-frameStart)/1000||.016);frameStart=now;
+    game.render(now,delta);
+    requestAnimationFrame(draw);
+  }catch(err){renderFailure(err);}
 }
 $('game').addEventListener('pointerdown',e=>{touchX=e.clientX;});
 $('game').addEventListener('pointermove',e=>{
@@ -484,7 +508,7 @@ async function goToPlace(lat,lon,reset=true){
   setStreetStage(!reset);updateMap();save();
   await maybeLoadRealWorld(true);
 }
-// Location picker removed: the story uses a fixed starting location.
+// Fixed Moscow story: location selection intentionally removed from the desktop game.
 
 // Start: no geolocation permission, no account, no player position sent to any game server.
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
