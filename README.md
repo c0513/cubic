@@ -1,6 +1,6 @@
-# 🦖 Данчезавр: Geo Codecraft — MVP 0.2
+# 🦖 Данчезавр: Geo Codecraft — v0.6 «Город + панорамы»
 
-Браузерная 3D-игра с русским интерфейсом для iPad и компьютера. Ребёнок управляет кубическим динозавром **настоящим Python**, а игровой мир привязан к координатам Земли.
+Браузерная 3D-игра с русским интерфейсом для iPad и компьютера. Ребёнок управляет пиксельным Данчезавром **настоящим Python**, а теперь игровой мир ощущается как городской квартал Москвы в стиле Minecraft.
 
 ## Реализовано
 
@@ -95,3 +95,12 @@ node --check src/engine.js
 - Voxels represent OpenStreetMap shapes when Overpass succeeds; when unavailable the world explicitly switches to *stylized* demo terrain. This is a game map, not a pedestrian navigation system.
 - The public OSM server is best effort. For substantial usage, cache geographic extracts or adopt a map data provider; public services have availability and rate policies.
 - Keep sensitive family relationships and actual home locations out of promotional screenshots and screenshots shared publicly.
+
+
+## v0.6: настоящие улицы
+
+Кнопка **«🏙 Реальные улицы»** в карточке путешествия открывает модальное окно со ссылками на Яндекс Карты для текущей игровой клетки, стартового адреса и подтверждённой точки финиша. Панорамы запускаются **по нажатию**, через внешнюю страницу Яндекс Карт, без копирования чужих панорамных изображений и без передачи GPS устройства. Не на каждом месте панорама доступна; для этого предусмотрена ссылка «Показать на карте». Точное положение бабушки не подменяется соседним домом.
+
+Для локального теста: `python -m http.server 8000`, затем откройте `http://localhost:8000/`. Для Render: Static Site, `publishPath: .`, ветка `danchezavr-codecraft`, сборка не требуется.
+
+Если Overpass временно недоступен, появится **отмеченный в интерфейсе демонстрационный город** (процедурная сетка), а не пустая поляна. Демосетка не выдаётся за точную географию.

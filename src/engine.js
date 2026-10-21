@@ -173,22 +173,35 @@ export class VoxelGame {
     const jump=Math.sin(Math.min(1,this.player.jump)*Math.PI)*.22;
     const walking=this.mode==='hub'&&this.movingHub;
     const bob=walking?Math.sin(t*14)*.055:Math.sin(t*2.6)*.018;
-    const y=.69+bob+jump;
+    const y=.72+bob+jump;
     const box=(x,dy,z,w,h,d,c)=>{const xx=cx+x*Math.cos(yaw)-z*Math.sin(yaw),zz=cz+x*Math.sin(yaw)+z*Math.cos(yaw);m.box(xx,y+dy,zz,w,h,d,c,yaw)};
-    box(0,-.12,0,.65,.73,.52,'#4ed39d');
-    box(.30,.32,0,.63,.56,.62,'#65edb2');
-    box(.66,.18,0,.58,.28,.57,'#a8ffce');
-    box(.53,.51,-.32,.13,.14,.12,'#142940');
-    box(.53,.51,.32,.13,.14,.12,'#142940');
-    box(.59,.55,-.39,.075,.07,.06,'#ffffff');
-    box(.18,.70,0,.24,.26,.3,'#3ebd88');
-    box(-.52,-.36,0,.64,.22,.33,'#2da57b');
-    box(-.83,-.38,0,.35,.12,.22,'#2da57b');
-    box(-.2,-.53,-.24,.22,.32,.25,'#286c61');
-    box(-.2,-.53,.24,.22,.32,.25,'#286c61');
-    box(.27,-.20,-.36,.23,.18,.17,'#53ba8e');
-    box(.27,-.20,.36,.23,.18,.17,'#53ba8e');
-    box(.65,.03,-.22,.09,.08,.04,'#2a7868');
+    // Body
+    box(-.03,-.08,0,.72,.78,.58,'#4ed39d');
+    box(.12,.28,0,.52,.28,.48,'#bdf6d5');
+    // Head + muzzle
+    box(.34,.44,0,.92,.78,.82,'#63e8ad');
+    box(.85,.34,0,.52,.32,.48,'#cffff0');
+    box(.99,.27,0,.12,.07,.16,'#2e7b6a');
+    // Eyes
+    box(.60,.63,-.24,.14,.16,.12,'#17324d');
+    box(.60,.63,.24,.14,.16,.12,'#17324d');
+    box(.67,.67,-.30,.08,.08,.06,'#ffffff');
+    box(.67,.67,.18,.08,.08,.06,'#ffffff');
+    // Crest and tail
+    box(.10,.86,0,.26,.18,.38,'#39b57f');
+    box(-.58,-.18,0,.72,.24,.36,'#36b181');
+    box(-.93,-.20,0,.42,.14,.22,'#36b181');
+    // Scarf
+    box(.18,.05,0,.18,.40,.66,'#ff8f3c');
+    box(.05,-.16,.23,.28,.18,.10,'#ff8f3c');
+    // Legs
+    box(-.18,-.55,-.21,.22,.36,.24,'#295f54');
+    box(-.18,-.55,.21,.22,.36,.24,'#295f54');
+    // Tiny hands
+    box(.29,-.16,-.34,.20,.16,.14,'#53ba8e');
+    box(.29,-.16,.34,.20,.16,.14,'#53ba8e');
+    // Backpack
+    box(-.18,.08,0,.18,.42,.38,'#516a8e');
   }
   makeDynamic(t){
     const m=new Mesh(),p=this.player;
@@ -238,9 +251,15 @@ export class VoxelGame {
       this.camera.eye=[3.8,9.8,10.2];this.camera.target=[1.2,.1,-.7];
     }else{
       const p=this.player;
-      this.camera.target=[p.x,.78,p.z];
-      const a=this.camYaw;
-      this.camera.eye=[p.x+Math.sin(a)*8,6.7,p.z+Math.cos(a)*8];
+      if(this.mode==='geo'){
+        this.camera.target=[p.x,1.05,p.z];
+        const a=this.camYaw;
+        this.camera.eye=[p.x+Math.sin(a)*6.2,5.6,p.z+Math.cos(a)*6.2];
+      }else{
+        this.camera.target=[p.x,.78,p.z];
+        const a=this.camYaw;
+        this.camera.eye=[p.x+Math.sin(a)*8,6.7,p.z+Math.cos(a)*8];
+      }
     }
     gl.uniformMatrix4fv(this.viewLoc,false,lookAt(this.camera.eye,this.camera.target));
     this.drawBuffer(this.staticBuffer,this.staticCount);

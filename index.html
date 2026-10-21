@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <title>Данчезавр: Codecraft — кубический мир Python</title>
+  <title>Данчезавр: Codecraft — Москва и Python</title>
 </head>
 <body>
   <main id="app">
@@ -32,7 +32,7 @@
       <small id="hubDescription">Пиши Python, чтобы перемещаться по реальным координатам</small>
     </div>
     <div class="geo-hud" id="geoHud"><span class="geo-indicator"></span><span id="geoStatus">Загружаем географию…</span><small id="geoCoordinates">Москва · Хорошёво-Мнёвники</small></div>
-    <section class="journey-card" aria-label="Маршрут к бабушке"><strong>🏠 Миссия: в гости к бабушке</strong><small>От Народного Ополчения, 12к4 → Демьяна Бедного, 1к5</small><div class="journey-direction" id="goalDirection">📍 Ищем точный адрес финиша…</div><small id="goalDistance">Путь выбираешь ты · Москва</small><div class="journey-buttons"><button id="restartJourney" type="button">↺ С начала</button><button id="retryGoal" type="button">⌕ Найти бабушку</button></div></section>
+    <section class="journey-card" aria-label="Маршрут к бабушке"><strong>🏠 Миссия: в гости к бабушке</strong><small>От Народного Ополчения, 12к4 → Демьяна Бедного, 1к5</small><div class="journey-direction" id="goalDirection">📍 Ищем точный адрес финиша…</div><small id="goalDistance">Путь выбираешь ты · Москва</small><div class="journey-buttons"><button id="restartJourney" type="button">↺ С начала</button><button id="retryGoal" type="button">⌕ Найти бабушку</button><button id="openPanoramaButton" type="button">🏙 Реальные улицы</button></div></section>
     <section class="world-map" id="worldMap" aria-label="Настоящая карта OpenStreetMap">
       <div class="map-head"><strong>🌍 РЕАЛЬНАЯ КАРТА</strong><button id="changePlaceButton" title="Сменить город">⌕ Сменить место</button></div>
       <div class="map-viewport" id="mapViewport"><div id="mapTiles" class="map-tiles"></div><div class="map-grid"></div><div class="map-goal hidden" id="mapGoal" title="Дом бабушки">🏠</div><div class="map-player">🦖</div></div>
@@ -69,6 +69,27 @@
     </div>
     <div id="victory" class="modal-wrap hidden"><div class="win-card"><div class="win-icon">🏆</div><div class="eyebrow">МИССИЯ ВЫПОЛНЕНА!</div><h2>Код работает! 🎉</h2><p id="victoryText">Ты прошёл испытание!</p><div class="win-reward" id="victoryReward">+50 💎</div><button class="primary-button huge" id="nextButton">Следующая миссия →</button><button class="plain-button" id="victoryExplore">Продолжить исследование</button></div></div>
     <div id="searchModal" class="modal-wrap hidden"><div class="help-card"><button class="icon-button help-close" id="searchClose">✕</button><h2>🌍 Куда отправимся?</h2><p>Найди город, парк или адрес. Игра переместится на новую часть реальной карты. Это игровое перемещение — GPS устройства мы не используем.</p><form id="placeForm" class="place-form"><input id="placeInput" type="search" placeholder="Например, Москва, Зарядье" required autocomplete="off"><button type="submit" class="primary-button">Найти</button></form><div class="place-presets"><button data-place="55.7517,37.6287">Москва</button><button data-place="59.9391,30.3158">Петербург</button><button data-place="55.7985,49.1063">Казань</button><button data-place="48.8584,2.2945">Париж</button></div><p class="search-message" id="searchMessage"></p></div></div>
+    <div id="panoramaModal" class="modal-wrap hidden" role="dialog" aria-modal="true" aria-labelledby="panoramaTitle">
+      <div class="help-card panorama-card">
+        <button class="icon-button help-close" id="panoramaClose" type="button" aria-label="Закрыть">✕</button>
+        <div class="eyebrow">🌆 МОСКВА · НАСТОЯЩИЕ УЛИЦЫ</div>
+        <h2 id="panoramaTitle">Посмотри место в реальности</h2>
+        <p>Внутри игры Данчезавр путешествует по клеточкам. Здесь можно открыть настоящую улицу в Яндекс Картах. Снимки зависят от того, где доступны панорамы.</p>
+        <div class="panorama-places">
+          <section class="panorama-place"><strong>🦖 Где Данчезавр сейчас</strong><small id="panoramaCurrentLabel">Координаты игрового героя</small>
+            <div><a id="panoramaCurrentLink" target="_blank" rel="noopener noreferrer" href="#">Открыть панораму ↗</a><a id="panoramaCurrentMap" target="_blank" rel="noopener noreferrer" href="#">Показать на карте ↗</a></div>
+          </section>
+          <section class="panorama-place"><strong>🏠 Место старта</strong><small>Народного Ополчения, 12к4</small>
+            <div><a id="panoramaStartLink" target="_blank" rel="noopener noreferrer" href="#">Открыть панораму ↗</a><a id="panoramaStartMap" target="_blank" rel="noopener noreferrer" href="#">Показать на карте ↗</a></div>
+          </section>
+          <section class="panorama-place"><strong>🎯 Дом бабушки</strong><small id="panoramaGoalLabel">Проверяем координаты корпуса 1к5</small>
+            <div><a id="panoramaGoalLink" target="_blank" rel="noopener noreferrer" href="#">Открыть панораму ↗</a><a id="panoramaGoalMap" target="_blank" rel="noopener noreferrer" href="#">Показать на карте ↗</a></div>
+          </section>
+        </div>
+        <p class="panorama-note">Панорамы открываются на сайте Яндекс Карт, а не внутри игры. Если нужной панорамы нет, используй ссылку на карту. Текущая точка — положение персонажа, а не GPS iPad.</p>
+        <button class="primary-button" type="button" id="panoramaDone">Вернуться к Данчезавру</button>
+      </div>
+    </div>
     <div id="helpModal" class="modal-wrap hidden"><div class="help-card"><button class="icon-button help-close" id="helpClose">✕</button><h2>Как играть 🎮</h2><p><strong>На iPad:</strong> нажми «Написать код», введи Python и запускай. Команды двигают Данчезавра по клеткам настоящей карты. Поворот камеры: проведи пальцем по 3D-миру.</p><p><strong>На компьютере:</strong> тоже управляй с помощью Python. Мышью можно только поворачивать камеру.</p><p><strong>Python:</strong> открой миссию, напиши команды в редакторе, запусти код и посмотри, что сделал герой. Отступы после <code>for</code> и <code>if</code> важны!</p><button class="primary-button" id="helpOk">Понятно!</button></div></div>
   </main>
   <script type="module" src="src/main.js"></script>

@@ -1,6 +1,7 @@
 import { GeoVoxelGame, parseOSM, gridToLatLon, toGrid, GRID_METERS } from './geo.js';
 import { LEVELS, STORAGE_KEY } from './levels.js';
 import { FIRST_JOURNEY, resolveGoal, directionToCell, finishedGoal, metersApart } from './route.js';
+import { panoramaUrl, mapUrl } from './panorama.js';
 
 const $ = id => document.getElementById(id);
 const game = new GeoVoxelGame($('game'));
@@ -67,7 +68,7 @@ function updateQuest(){
   $('codeInput').value=codeDrafts[selected] ?? (sandbox?'# Свободный мир — твой Python!\n':level.starter);
   updateLines();
   $('hubHeadline').textContent=sandbox?'Мир открыт для исследований':`Миссия ${selected+1}: ${level.name}`;
-  $('hubDescription').textContent='Старт: Народного Ополчения, 12к4 · цель: к бабушке';
+  $('hubDescription').textContent='Город Москва · старт: Народного Ополчения, 12к4 · цель: к бабушке';
   $('lessonCommand').textContent=sandbox?'Твои программы':level.command;
   $('lessonExplain').textContent=sandbox?'Экспериментируй с командами, циклами for, проверками if и функциями.':level.explain;
   $('lessonExample').textContent=sandbox?'if front_is_clear():\n    move_forward()':level.example;
@@ -105,6 +106,39 @@ $('exploreButton').addEventListener('click',()=>{$('intro').classList.add('hidde
 $('helpButton').addEventListener('click',()=>{$('helpModal').classList.remove('hidden');});
 $('helpClose').addEventListener('click',()=>{$('helpModal').classList.add('hidden');});
 $('helpOk').addEventListener('click',()=>{$('helpModal').classList.add('hidden');});
+
+// Real city views: only external links, opened on explicit user taps.
+function setPanoramaLinks(kind, coords) {
+  const panorama=$(`panorama${kind}Link`),map=$(`panorama${kind}Map`);
+  for (const a of [panorama,map]) {
+    a.removeAttribute('href');a.setAttribute('aria-disabled','true');a.classList.add('unavailable');
+  }
+  if(!coords || coords.length!==2)return;
+  const [lat,lon]=coords;
+  if(!Number.isFinite(lat)||!Number.isFinite(lon))return;
+  panorama.href=panoramaUrl(lat,lon);map.href=mapUrl(lat,lon);
+  for (const a of [panorama,map]) {a.removeAttribute('aria-disabled');a.classList.remove('unavailable');}
+}
+function updatePanoramaLinks(){
+  if(!game.playerGlobal)return;
+  const current=gridToLatLon(...game.playerGlobal);
+  setPanoramaLinks('Current',current);
+  setPanoramaLinks('Start',HOME);
+  setPanoramaLinks('Goal',goalCoords);
+  $('panoramaCurrentLabel').textContent=`${current[0].toFixed(5)}°, ${current[1].toFixed(5)}° · игровая позиция`;
+  $('panoramaGoalLabel').textContent=goalCoords?'Демьяна Бедного, 1к5 · координаты подтверждены':'Корпус 1к5 ещё не найден точно. Ссылка пока недоступна.';
+}
+function closePanorama(){ $('panoramaModal').classList.add('hidden'); }
+$('openPanoramaButton').addEventListener('click',()=>{updatePanoramaLinks();$('panoramaModal').classList.remove('hidden');});
+$('panoramaClose').addEventListener('click',closePanorama);
+$('panoramaDone').addEventListener('click',closePanorama);
+$('panoramaModal').addEventListener('click',e=>{if(e.target===$('panoramaModal'))closePanorama();});
+for(const id of ['panoramaCurrentLink','panoramaCurrentMap','panoramaStartLink','panoramaStartMap','panoramaGoalLink','panoramaGoalMap']) {
+  $(id).addEventListener('click',event=>{
+    if($(id).getAttribute('aria-disabled')==='true')event.preventDefault();
+  });
+}
+
 $('nextButton').addEventListener('click',()=>{
   $('victory').classList.add('hidden');updateQuest();openEditor();
 });
@@ -240,6 +274,7 @@ function updateMap(){
   const [lat,lon]=gridToLatLon(...game.playerGlobal);
   $('geoCoordinates').textContent=`${lat.toFixed(5)}°, ${lon.toFixed(5)}° · ${DIR_NAMES[game.heading]}`;
   updateGoalUI();
+  if(!$('panoramaModal').classList.contains('hidden'))updatePanoramaLinks();
   const ground= Math.round(GRID_METERS*Math.cos(lat*Math.PI/180));
   $('mapMeters').textContent=`1 клетка ≈ ${ground} м`;
   const zoom=16,[worldX,worldY]=slippy(lat,lon,zoom),tx=Math.floor(worldX/256),ty=Math.floor(worldY/256);
@@ -248,7 +283,7 @@ function updateMap(){
   if(tileKey!==lastTileKey){
     lastTileKey=tileKey;tiles.replaceChildren();
     for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
-      const img=document.createElement('img');img.alt='';img.loading='lazy';img.referrerPolicy='no-referrer';
+      const img=document.createElement('img');img.alt='';img.loading='lazy';img.referrerPolicy='strict-origin-when-cross-origin';
       img.src=`https://tile.openstreetmap.org/${zoom}/${tx+dx}/${ty+dy}.png`;
       img.style.position='absolute';img.style.width='256px';img.style.height='256px';
       img.dataset.dx=dx;img.dataset.dy=dy;tiles.appendChild(img);

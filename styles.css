@@ -42,3 +42,16 @@
 .journey-buttons{display:flex;flex-wrap:wrap;gap:8px}
 @media(min-width:761px) and (max-width:1100px){.journey-card{left:230px;top:100px;max-width:360px}}
 @media(max-width:760px){.journey-card{top:calc(149px + env(safe-area-inset-top));left:8px;width:calc(100vw - 186px);max-width:210px;padding:9px}.journey-card strong{font-size:10px}.journey-card small{font-size:9px}.journey-direction{font-size:12px}.journey-card button{font-size:9px}.journey-buttons{gap:4px}}
+
+/* v0.6: opt-in external panorama reference panel (iPad responsive). */
+.panorama-card{width:min(630px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;padding:24px}
+.panorama-places{display:grid;gap:11px;margin:18px 0}
+.panorama-place{border:1px solid #6596a56b;border-radius:13px;background:#132d42;padding:13px;display:flex;flex-direction:column;gap:8px}
+.panorama-place strong{color:#ffe0a1;font-size:14px}
+.panorama-place small{color:#afc5d5;font-size:12px}
+.panorama-place>div{display:flex;gap:8px;flex-wrap:wrap}
+.panorama-place a{color:#0b3241;text-decoration:none;background:#74dfb5;padding:9px 11px;border-radius:9px;font-size:12px;font-weight:750}
+.panorama-place a:nth-child(2){background:#2c5168;color:#e3f2fb}
+.panorama-place a.unavailable{pointer-events:none;opacity:.42;filter:grayscale(.8);cursor:not-allowed}
+.panorama-note{font-size:12px;color:#b3cbd3;line-height:1.5}
+@media(max-width:720px){.panorama-card{padding:15px}.panorama-place{padding:10px}.panorama-place a{font-size:11px}.journey-buttons #openPanoramaButton{background:#487762;color:#fff8dc}}
