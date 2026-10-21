@@ -71,18 +71,4 @@
 @media(max-width:760px){.street-quest{left:8px;top:calc(334px + env(safe-area-inset-top));width:min(275px,calc(100vw - 20px));padding:9px;gap:5px}.street-quest-heading{font-size:10px}.street-quest-title{font-size:12px}.street-quest p{font-size:10px}.street-instruction{font-size:10px}.street-quest button{font-size:10px;padding:6px 8px}.street-quest small{display:none}}
 @media(orientation:landscape) and (max-height:650px){.street-quest{top:auto;bottom:70px;left:10px;width:240px;max-height:155px;overflow:auto;gap:4px}.street-quest small{display:none}}
 
-/* v0.8 grandma NPC + chapter two */
-.grandma-card{position:absolute;z-index:8;right:18px;top:355px;width:285px;padding:13px 14px;display:flex;flex-direction:column;gap:7px;border:1px solid #c9a6ee8c;border-radius:17px;background:rgba(34,25,53,.93);backdrop-filter:blur(16px);box-shadow:0 13px 40px #170e29ad}
-.grandma-header{display:flex;align-items:center;gap:10px}.grandma-portrait{background:#75549a;border:1px solid #bc96e1;font-size:28px;width:45px;height:45px;display:grid;place-items:center;border-radius:13px;flex:none}
-.grandma-header strong{font-size:14px;line-height:1.2;display:block;margin-top:4px;color:#fff0db}.grandma-card p{font-size:11px;color:#e0d6eb;line-height:1.4;margin:0}
-.grandma-command{padding:8px 10px;border:1px solid #c5a9ff44;background:#1a1833;border-radius:9px;font:12px ui-monospace,Consolas,monospace;color:#dbffc2}
-.grandma-card button{background:#56437c;border:1px solid #8b72b9;color:#fff0fb;border-radius:9px;padding:8px 10px;font-size:11px;align-self:flex-start}.grandma-card small{font-size:9px;color:#b5a5cc;line-height:1.3}
-.map-grandma,.map-chapter{position:absolute;z-index:7;font-size:24px;pointer-events:none;transform:translate(-50%,-50%);filter:drop-shadow(0 0 5px #ffccfc)}
-.map-chapter{filter:drop-shadow(0 0 5px #ffdd7b)}
-.grandma-dialogue-card{border-color:#e8b9f2a2;max-width:470px}.grandma-dialogue-avatar{width:80px;height:80px;background:#71529c;border:3px solid #ceadde;border-radius:20px;font-size:50px;display:grid;place-items:center;margin:0 auto 14px;box-shadow:0 10px 30px #9a72ba44}
-.grandma-dialogue-card h2{color:#ffedcf}.grandma-dialogue-card p{color:#dee1f5;line-height:1.6}.grandma-dialogue-buttons{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px}
-@media(max-width:900px){.grandma-card{top:auto;bottom:112px;right:10px;width:min(252px,35vw);gap:4px;padding:9px}.grandma-header strong{font-size:11px}.grandma-portrait{font-size:21px;width:34px;height:34px}.grandma-card small{display:none}.grandma-card p{font-size:10px}.grandma-command{font-size:10px;padding:5px}.grandma-card button{padding:5px 7px;font-size:10px}}
-@media(max-width:720px){.grandma-card{right:8px;top:calc(335px + env(safe-area-inset-top));bottom:auto;width:min(165px,calc(100vw - 195px));padding:8px}.grandma-portrait{display:none}.grandma-header strong{font-size:10px}.grandma-card .eyebrow{font-size:8px}.grandma-card p{font-size:9px}.grandma-command{font-size:8px;overflow-wrap:anywhere}.grandma-card button{font-size:9px}.grandma-dialogue-card{padding:18px}}
-@media(orientation:landscape) and (max-height:650px){.grandma-card{top:230px;bottom:auto;right:8px;max-height:150px;overflow:auto}}
-
-@media(max-width:720px){.grandma-card{left:8px;right:auto;top:calc(520px + env(safe-area-inset-top));bottom:auto;width:min(275px,calc(100vw - 16px));max-height:112px;overflow:auto}}
+.grandma-card{padding:14px;border:2px solid #dbad78;border-radius:16px;background:linear-gradient(145deg,#ffeac3,#fff9e5);color:#50341b;display:grid;gap:9px;margin-block:10px}.grandma-card p{margin:0;font-size:13px;line-height:1.45}.grandma-card button{border:0;padding:12px;border-radius:10px;background:#916145;color:#fff;font-weight:800}.grandma-card button:disabled{opacity:.45}.grandma-card #grandmaChapter{padding:10px;border-radius:10px;background:#f0d59d}.grandma-card .hidden{display:none}

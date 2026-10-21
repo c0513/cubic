@@ -42,7 +42,7 @@ export class GeoVoxelGame extends VoxelGame {
     super(canvas);
     this.mode='geo';this.geoCenter=[0,0];this.geoFeatures=[];this.dataMode='stylized';this.geoTiles=new Map();
     this.progress={completed:[],coins:0};this.spawn=[0,0];this.heading=3;this.bridgeBuilt=false;this.crystalTaken=false;
-    this.goalGlobal=null;this.goalReached=false;this.grandmaCell=null;this.grandmaTalked=false;this.packageReady=false;this.packageDelivered=false;this.chapterTarget=null;this.streetWaypoint=null;
+    this.goalGlobal=null;this.goalReached=false;this.streetWaypoint=null;
     this.player={x:0,z:0,facing:3,yaw:this.facingYaw(3),jump:0};this.camYaw=.56;
   }
   setPlace(lat,lon){
@@ -277,43 +277,6 @@ export class GeoVoxelGame extends VoxelGame {
         }
       }
     }
-    if(this.chapterTarget){
-      const [cx,cz]=this.geoCenter,x=this.chapterTarget[0]-cx,z=this.chapterTarget[1]-cz;
-      if(Math.abs(x)<=HALF&&Math.abs(z)<=HALF){
-        const bounce=.35+Math.sin(t*3)*.10;
-        m.box(x,.08,z,.86,.1,.86,'#a880ff');
-        m.box(x,.42+bounce,z,.42,.18,.20,'#ffe286',t*.35);
-        m.box(x+.22,.42+bounce,z,.16,.18,.13,'#ffe286',t*.35);
-        m.box(x-.25,.42+bounce,z,.18,.12,.14,'#fff3b5',t*.35);
-      }
-    }
-    // A friendly voxel NPC appears ONLY at a confirmed destination, on a traversable game cell.
-    if(this.grandmaCell){
-      const [cx,cz]=this.geoCenter,x=this.grandmaCell[0]-cx,z=this.grandmaCell[1]-cz;
-      if(Math.abs(x)<=HALF&&Math.abs(z)<=HALF){
-        const bob=Math.sin(t*2.2)*.025;
-        m.box(x,.06,z,.83,.1,.83,'#eac27c');
-        // Purple coat/dress, cream face, silver hair, glasses and arms.
-        m.box(x,.45+bob,z,.56,.70,.49,'#8d6db2');
-        m.box(x,.84+bob,z,.51,.30,.51,'#c7acd9');
-        m.box(x,1.10+bob,z,.52,.52,.53,'#f0cbac');
-        m.box(x,1.42+bob,z,.58,.20,.59,'#dce5ee');
-        m.box(x-.27,1.15+bob,z,.14,.43,.47,'#dce5ee');
-        m.box(x+.27,1.15+bob,z,.14,.43,.47,'#dce5ee');
-        m.box(x-.15,1.15+bob,z-.277,.14,.11,.04,'#453d58');
-        m.box(x+.15,1.15+bob,z-.277,.14,.11,.04,'#453d58');
-        m.box(x,1.15+bob,z-.28,.12,.035,.035,'#705b64');
-        m.box(x,1.47+bob,z+.32,.22,.30,.20,'#dce5ee');
-        m.box(x-.38,.78+bob,z,.20,.15,.22,'#eac5a5');
-        m.box(x+.38,.78+bob,z,.20,.15,.22,'#eac5a5');
-        if(!this.packageDelivered){
-          m.box(x,2.06+Math.sin(t*3)*.13,z,.16,.48,.16,'#ffdd76');
-          m.box(x,2.40+Math.sin(t*3)*.13,z,.20,.18,.20,'#fff2b4');
-        } else {
-          m.box(x,2.13+Math.sin(t*3)*.10,z,.26,.22,.22,'#ff8d9b',t*.2);
-        }
-      }
-    }
     if(this.goalGlobal){
       const [cx,cz]=this.geoCenter,x=this.goalGlobal[0]-cx,z=this.goalGlobal[1]-cz;
       if(Math.abs(x)<HALF&&Math.abs(z)<HALF){
@@ -321,19 +284,21 @@ export class GeoVoxelGame extends VoxelGame {
         m.box(x,h,z,.24,1.7,.24,'#efb756',t*.20);
         m.box(x,h+1.10,z,.95,.8,.95,'#ffd879',t*.35);
         m.box(x,h+1.55,z,.47,.29,.47,'#fff8db');
+        // Friendly voxel grandma NPC next to the destination marker.
+        const bx=x+.72,bz=z+.72;
+        m.box(bx,.48,bz,.48,.8,.40,'#9f6cbd'); // purple dress
+        m.box(bx,.94,bz,.46,.38,.38,'#f1c59d'); // face
+        m.box(bx,1.19,bz,.52,.18,.44,'#e9e9e9'); // hair
+        m.box(bx-.13,1.00,bz-.20,.09,.07,.04,'#293044');
+        m.box(bx+.13,1.00,bz-.20,.09,.07,.04,'#293044');
+        m.box(bx,.80,bz-.22,.18,.07,.09,this.grandmaMet?'#f6ce6b':'#ffb36b');
       }
     }
     return m;
   }
   getSnapshot(){const {obstacles,water}=this.obstaclesAround(19);return {origin:[...this.playerGlobal],facing:this.heading,obstacles,water,
-      crystal:this.streetWaypoint?.stage===2?[this.streetWaypoint.target]:this.chapterTarget?[this.chapterTarget]:[],
-      grandmaCell:this.grandmaCell,grandmaTalked:this.grandmaTalked,packageReady:this.packageReady,packageDelivered:this.packageDelivered,bridgeCell:[this.spawn[0],this.spawn[1]-5], bridgeBuilt:this.bridgeBuilt,maxRange:15,boards:3};}
+      crystal:this.streetWaypoint?.stage===2?[this.streetWaypoint.target]:[],bridgeCell:[this.spawn[0],this.spawn[1]-5], bridgeBuilt:this.bridgeBuilt,maxRange:15,boards:3};}
   setGoal(cell){this.goalGlobal=cell;this.goalReached=false;}
   setStreetWaypoint(quest){this.streetWaypoint=quest?{stage:quest.stage,target:[...quest.target]}:null;}
-  setGrandmaCell(cell){this.grandmaCell=cell?[...cell]:null;}
-  setChapterTarget(cell){this.chapterTarget=cell?[...cell]:null;}
-  setGrandmaContext(state,ready){
-    this.grandmaTalked=Boolean(state?.talked);this.packageDelivered=Boolean(state?.delivered);this.packageReady=Boolean(ready);
-  }
   nearRefresh(){return Math.max(Math.abs(this.playerGlobal[0]-this.geoCenter[0]),Math.abs(this.playerGlobal[1]-this.geoCenter[1]))>=8;}
 }
