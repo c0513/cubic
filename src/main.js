@@ -466,7 +466,7 @@ async function maybeLoadRealWorld(force=false){
     game.setFeatures([],'stylized');
     setStreetStage(true);
     $('geoStatus').textContent='3D-деморежим · карта OSM доступна отдельно';
-    console.warn('OpenStreetMap 3D import unavailable',e);
+    if(e?.name!=='AbortError')console.warn('OpenStreetMap 3D import unavailable',e);
   }finally{clearTimeout(timer);}
 }
 
@@ -484,34 +484,7 @@ async function goToPlace(lat,lon,reset=true){
   setStreetStage(!reset);updateMap();save();
   await maybeLoadRealWorld(true);
 }
-$('changePlaceButton').addEventListener('click',()=>{$('searchModal').classList.remove('hidden');});
-$('searchClose').addEventListener('click',()=>{$('searchModal').classList.add('hidden');});
-for(const button of document.querySelectorAll('[data-place]')){
-  button.addEventListener('click',async()=>{
-    const [lat,lon]=button.dataset.place.split(',').map(Number);
-    $('searchModal').classList.add('hidden');closeEditor();
-    await goToPlace(lat,lon);showToast('Новая точка открыта! Квесты начнутся сначала.');
-  });
-}
-$('placeForm').addEventListener('submit',async e=>{
-  e.preventDefault();
-  const text=$('placeInput').value.trim(),message=$('searchMessage');
-  const coords=text.match(/^\s*(-?\d+(?:\.\d+)?)\s*[,;]\s*(-?\d+(?:\.\d+)?)\s*$/);
-  let lat,lon;
-  if(coords){lat=Number(coords[1]);lon=Number(coords[2]);}
-  else{
-    message.textContent='Ищем место на карте…';
-    try{
-      const result=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(text)}&format=jsonv2&limit=1&accept-language=ru`);
-      if(!result.ok)throw new Error('Сервис поиска недоступен');
-      const list=await result.json();if(!list.length)throw new Error('Место не найдено');
-      lat=Number(list[0].lat);lon=Number(list[0].lon);
-    }catch(err){message.textContent=`Ошибка поиска: ${err.message}. Можно ввести координаты через запятую.`;return;}
-  }
-  if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>85||Math.abs(lon)>180){message.textContent='Проверь координаты: широта −85…85, долгота −180…180.';return;}
-  message.textContent='';$('searchModal').classList.add('hidden');closeEditor();
-  await goToPlace(lat,lon);showToast('Новая точка открыта!');
-});
+// Location picker removed: the story uses a fixed starting location.
 
 // Start: no geolocation permission, no account, no player position sent to any game server.
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
