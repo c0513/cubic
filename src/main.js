@@ -114,6 +114,42 @@ function renderQuests(){
     list.appendChild(button);
   });
 }
+
+const COMMAND_LIBRARY = [
+  {at:0,label:'Шаг вперёд',code:'move_forward()',help:'Один шаг в сторону взгляда. Можно написать move_forward(3) для трёх шагов.'},
+  {at:1,label:'Вправо',code:'turn_right()',help:'Повернуться на 90° по часовой стрелке, не делая шага.'},
+  {at:1,label:'Влево',code:'turn_left()',help:'Повернуться на 90° против часовой стрелки.'},
+  {at:2,label:'Цикл for',code:'for i in range(3):\n    move_forward()',help:'Повторить действие три раза. Следующая строка должна иметь четыре пробела.'},
+  {at:3,label:'Проверить путь',code:'front_is_clear()',help:'Вернёт True, если впереди нет препятствия.'},
+  {at:3,label:'Условие if',code:'if front_is_clear():\n    move_forward()',help:'Шагнуть, только если путь впереди свободен.'},
+  {at:4,label:'Собрать предмет',code:'collect()',help:'Подобрать игровую посылку или предмет на текущей клетке.'},
+  {at:4,label:'Поставить блок',code:'place_block()',help:'Поставить доступный строительный блок, если игровая ситуация это позволяет.'},
+];
+function insertCommand(code){
+  const input=$('codeInput'),start=input.selectionStart,end=input.selectionEnd;
+  const before=input.value.slice(0,start),after=input.value.slice(end);
+  const previous=before.split('\n').at(-1);
+  const mustNewline=previous.trim().length>0;
+  const indent=(previous.match(/^\s*/)||[''])[0];
+  const chunk=(mustNewline?'\n':'')+code.split('\n').map((line,i)=>i===0?indent+line:indent+line).join('\n')+'\n';
+  input.setRangeText(chunk,start,end,'end');
+  input.dispatchEvent(new Event('input',{bubbles:true}));
+  input.focus();
+}
+function renderCommandLibrary(){
+  const root=$('commandButtons');if(!root)return;
+  root.replaceChildren();
+  const max=selected>=LEVELS.length?LEVELS.length:selected;
+  for(const item of COMMAND_LIBRARY){
+    if(item.at>max)continue;
+    const b=document.createElement('button');b.type='button';b.className='command-button';b.title=item.help;
+    const label=document.createElement('strong');label.textContent=item.label;
+    const syntax=document.createElement('code');syntax.textContent=item.code.split('\n')[0];
+    const hint=document.createElement('small');hint.textContent=item.help;
+    b.append(label,syntax,hint);b.addEventListener('click',()=>insertCommand(item.code));root.append(b);
+  }
+}
+
 function updateQuest(){
   renderQuests();
   const level=LEVELS[selected];
@@ -124,7 +160,7 @@ function updateQuest(){
   $('missionStory').textContent=sandbox?'Ты прошёл обучение! Пиши свои программы на Python, чтобы путешествовать по настоящей карте, смотреть дороги и постройки.':level.story;
   $('missionTask').textContent=sandbox?'Придумай собственный маршрут — команды работают и после прохождения всех миссий.':level.task;
   $('codeInput').value=codeDrafts[selected] ?? (sandbox?'# Свободный мир — твой Python!\n':level.starter);
-  updateLines();
+  updateLines();renderCommandLibrary();
   $('hubHeadline').textContent=sandbox?'Мир открыт для исследований':`Миссия ${selected+1}: ${level.name}`;
   $('hubDescription').textContent='Город Москва · старт: Народного Ополчения, 12к4 · цель: к бабушке';
   $('lessonCommand').textContent=sandbox?'Твои программы':level.command;

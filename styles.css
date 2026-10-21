@@ -115,3 +115,43 @@
  .editor-panel.editor-full{height:94dvh}.editor-panel .lesson-box{margin-bottom:7px}.editor-panel .code-shell,.editor-panel .code-shell textarea{min-height:112px}
 }
 @media(orientation:landscape) and (max-height:540px){.quest-sidebar{top:63px}.journey-card{top:104px}.street-quest{top:145px}.grandma-card{display:none}.editor-panel{height:75dvh}.world-map.compact{top:61px}.geo-hud{bottom:12px}}
+
+/* v1.0: desktop-first 3-column game shell. Mobile layout remains unchanged. */
+.command-catalog{padding:11px 0 13px}.command-catalog-head{font-weight:900;color:#b4fbe1;font-size:13px;margin-bottom:8px;display:flex;flex-direction:column;gap:3px}.command-catalog-head small{color:#91a9bb;font-size:10px;font-weight:500}.command-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.command-button{display:flex;flex-direction:column;gap:4px;align-items:start;text-align:left;background:#17344a;border:1px solid #4c7e7e;border-radius:10px;color:#e6f9f4;padding:10px;min-width:0}.command-button:hover{border-color:#82f6c2;background:#23516a}.command-button strong{font-size:11px}.command-button code{font-size:10px;color:#a7f1b9;overflow-wrap:anywhere}.command-button small{font-size:9px;line-height:1.3;color:#b9cfdb}.map-lock-label{font-size:9px;color:#c8e8d8}.journey-buttons #openPanoramaButton{display:none!important}
+@media(min-width:1024px){
+ #app{--leftpanel:clamp(265px,21vw,330px);--rightpanel:clamp(320px,26vw,410px);--headerheight:72px;}
+ #game{inset:var(--headerheight) var(--rightpanel) 0 var(--leftpanel);width:calc(100% - var(--leftpanel) - var(--rightpanel));height:calc(100% - var(--headerheight));}
+ .sky-glow{pointer-events:none}
+ .topbar{height:var(--headerheight);background:#101f31;border-bottom:1px solid #395367;padding:8px 18px;align-items:center}
+ .quest-sidebar,.quest-sidebar.compact,.quest-sidebar.expanded{left:0;top:var(--headerheight);bottom:0;width:var(--leftpanel);max-height:none;border-radius:0;background:#102338!important;border:0;border-right:1px solid #35536b;padding:16px;overflow-y:auto;z-index:11;box-shadow:none}
+ .quest-sidebar.compact .quest-content{display:block}
+ .quest-sidebar .panel-toggle{display:none}
+ .quest-sidebar .quest-list{gap:9px}
+ .editor-panel,.editor-panel.hidden,.editor-panel.editor-full{display:flex!important;position:absolute;z-index:11;top:var(--headerheight);bottom:0;right:0;left:auto;transform:none;width:var(--rightpanel);height:auto;max-height:none;background:#0d1e31;border:0;border-left:1px solid #35536b;border-radius:0;padding:18px;overflow-y:auto}
+ .editor-panel .editor-head .icon-button,.editor-panel #editorExpand,.editor-panel .editor-grip,.editor-panel #backToHub{display:none}
+ .open-code-button,.code-controls,.hub-banner,.geo-hud{display:none!important}
+ .editor-panel .mission-story{display:block;font-size:11px}
+ .editor-panel .lesson-box{display:none}
+ .editor-panel h1{font-size:20px}
+ .editor-panel .code-shell,.editor-panel .code-shell textarea{min-height:205px}
+ .editor-panel .code-shell textarea{resize:vertical}
+ .world-map,.world-map.compact,.world-map.expanded{top:calc(var(--headerheight) + 12px);right:calc(var(--rightpanel) + 12px);width:164px;height:150px;min-height:0;z-index:7;background:#12283ad9;border:1px solid #477887;padding:6px;border-radius:13px}
+ .world-map.compact .map-viewport,.world-map.compact .map-foot,.world-map.compact .map-head strong{display:block}
+ .world-map #toggleMap{display:none}
+ .world-map .map-head strong{font-size:9px}
+ .world-map .map-foot{font-size:8px}
+ .journey-card,.journey-card.compact,.journey-card.expanded,.street-quest,.street-quest.compact,.street-quest.expanded{position:fixed;left:12px;width:calc(var(--leftpanel) - 24px);max-width:none;z-index:12;max-height:none;background:#193249;border:1px solid #35536b;box-shadow:none;border-radius:12px;padding:7px;overflow:visible}
+ .journey-card,.journey-card.compact,.journey-card.expanded{top:auto;bottom:194px}
+ .street-quest,.street-quest.compact,.street-quest.expanded{top:auto;bottom:14px}
+ .journey-card.compact .journey-content,.street-quest.compact .street-content{display:block}
+ .journey-content{max-height:130px;overflow-y:auto}
+ .street-content{max-height:120px;overflow-y:auto}
+ .journey-card .panel-toggle,.street-quest .panel-toggle{display:none}
+ .journey-card .journey-buttons #retryGoal{display:none}
+ .street-quest .street-quest-heading,.street-quest .street-instruction,.street-quest small{display:none}
+ .street-quest p,.journey-card small{font-size:10px}
+ .street-quest-title{font-size:12px}
+ .grandma-card{display:none}
+ .command-catalog{display:block}
+}
+@media(max-width:1023px){.command-catalog{display:none}}
