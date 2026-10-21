@@ -1,28 +1,74 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MAX ROAD TV</title><style>
-*{box-sizing:border-box}body{margin:0;background:#09090b;color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Arial,sans-serif}
-main{max-width:980px;margin:auto;padding:56px 22px 90px}.hero{padding:42px;border:1px solid #27272a;border-radius:32px;background:radial-gradient(circle at 80% 0,#312e81 0,transparent 38%),linear-gradient(135deg,#18181b,#09090b)}
-.kicker{color:#a1a1aa;font-weight:700;letter-spacing:.14em;font-size:12px}h1{font-size:clamp(46px,10vw,96px);line-height:.92;margin:18px 0 20px;letter-spacing:-.055em}p{color:#a1a1aa;line-height:1.55;font-size:17px}
-.url{margin:28px 0 10px;padding:18px 20px;background:#000;border:1px solid #3f3f46;border-radius:18px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;overflow:auto;white-space:nowrap;color:#d4d4d8}
-button,a.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:16px;padding:15px 20px;font-weight:800;font-size:15px;text-decoration:none;cursor:pointer}.primary{background:#fff;color:#09090b}.secondary{background:#27272a;color:#fff;margin-left:8px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:24px}.card{background:#18181b;border:1px solid #27272a;border-radius:22px;padding:22px}.card b{font-size:18px}.card p{font-size:14px;margin-bottom:0}.note{margin-top:24px;padding:18px 20px;border-radius:18px;background:#0c1b13;border:1px solid #14532d;color:#a7f3d0;font-size:14px;line-height:1.5}
-h2{margin-top:52px;font-size:30px;letter-spacing:-.03em}.tiny{font-size:12px;color:#71717a;margin-top:28px}
-</style></head><body><main><section class="hero"><div class="kicker">A051 · PERSONAL APTV FEED</div><h1>MAX<br>ROAD TV</h1>
-<p>Собрано под долгие поездки, гаджеты, игры, терминал, спорт и семейный просмотр. Один URL — и дальше всё обновляется само.</p>
-<div class="url" id="url">https://a051-road-tv.onrender.com/aptv.m3u</div>
-<button class="primary" onclick="navigator.clipboard.writeText(document.getElementById('url').innerText);this.innerText='Скопировано ✓'">Скопировать ссылку</button>
-<a class="btn secondary" href="/aptv.m3u">Открыть M3U</a></section>
-<div class="grid">
-<div class="card"><b>🇷🇺 Русский пакет</b><p>Россия 1, Россия 24, Россия-К, РБК, 360°, 2x2, Карусель, RU.TV Kids и дорожное радио.</p></div><div class="card"><b>🇷🇺 БЕЗ VPN</b><p>Сначала открывай эти группы: ACTION, ROAD, GEEK, FAMILY, NASA/NHK и low-net радио.</p></div>
-<div class="card"><b>🌍 VPN / если не открылось</b><p>Foreign news вынес отдельно: Bloomberg, France 24, DW и Reuters. В России доступ зависит от провайдера и конкретного CDN.</p></div>
-<div class="card"><b>🛣️ ROAD MODE</b><p>The Trip, Groove Salad и Secret Agent — музыка без лишней болтовни.</p></div>
-<div class="card"><b>💻 GEEK MODE</b><p>DEF CON Radio, Mission Control и Deep Space One.</p></div>
-<div class="card"><b>🦖 ДАНЧЕЗАВР</b><p>Небольшая семейная полка: Big Buck Bunny + Caminandes.</p></div>
-<div class="card"><b>📶 СЛАБАЯ СЕТЬ</b><p>32 kbps радио и 360p новости, когда LTE еле жив.</p></div>
-</div>
-<div class="note"><b>Про настоящий офлайн:</b> APTV — стриминговый плеер, поэтому без сети live-каналы не оживут. Я специально добавил сверхлёгкий режим для плохой связи. Для мест совсем без сети семейные ролики лучше заранее скачать в «Файлы» — ссылки на них есть в семейном плейлисте. В России сначала пробуй группы «🇷🇺 БЕЗ VPN», а VPN включай только для группы «🌍 VPN / если не открылось».</div>
-<h2>Бонусные конфиги</h2><div class="grid">
-<div class="card"><b>Low Net</b><p><a style="color:white" href="/road-low.m3u">https://a051-road-tv.onrender.com/road-low.m3u</a></p></div>
-<div class="card"><b>Family</b><p><a style="color:white" href="/family.m3u">https://a051-road-tv.onrender.com/family.m3u</a></p></div>
-<div class="card"><b>Live only</b><p><a style="color:white" href="/live.m3u">https://a051-road-tv.onrender.com/live.m3u</a></p></div><div class="card"><b>Russian pack</b><p><a style="color:white" href="/ru-pack.m3u">https://a051-road-tv.onrender.com/ru-pack.m3u</a></p></div>
-</div><div class="tiny">Made for Max · sources are public streams and openly licensed media; availability can change by region/provider.</div></main></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#0e1d35">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Данчезавр">
+  <meta name="description" content="Данчезавр: Codecraft — 3D-приключение с настоящим Python для детей.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Данчезавр: Codecraft — кубический мир Python</title>
+</head>
+<body>
+  <main id="app">
+    <canvas id="game" aria-label="Трёхмерный мир Данчезавра"></canvas>
+    <div class="sky-glow" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">🦖</span><span><strong>ДАНЧЕЗАВР</strong><small>GEO CODECRAFT <b>·</b> ЗЕМЛЯ</small></span></div>
+      <div class="top-stats"><span class="stat-chip"><span>💎</span><b id="coinCount">0</b></span><span class="stat-chip progress-chip"><span>🏆</span><b id="progressCount">0 / 4</b></span><button class="sound-chip" id="helpButton" title="Управление">?</button></div>
+    </header>
+    <aside class="quest-sidebar" id="questRail" aria-label="Список миссий">
+      <div class="rail-header"><span class="eyebrow">КАРТА ПРИКЛЮЧЕНИЙ</span><strong>Миссии Python</strong></div>
+      <div id="questList" class="quest-list"></div>
+      <div class="rail-bottom"><span class="orb orb-green"></span> Настоящая карта · Настоящий Python</div>
+    </aside>
+    <div class="hub-banner" id="hubBanner">
+      <div class="eyebrow">🌍 МИР ОТКРЫТ</div>
+      <strong id="hubHeadline">Весь мир — твоя карта</strong>
+      <small id="hubDescription">Пиши Python, чтобы перемещаться по реальным координатам</small>
+    </div>
+    <div class="geo-hud" id="geoHud"><span class="geo-indicator"></span><span id="geoStatus">Загружаем географию…</span><small id="geoCoordinates">55.7517°, 37.6287°</small></div>
+    <section class="world-map" id="worldMap" aria-label="Настоящая карта OpenStreetMap">
+      <div class="map-head"><strong>🌍 РЕАЛЬНАЯ КАРТА</strong><button id="changePlaceButton" title="Сменить город">⌕ Сменить место</button></div>
+      <div class="map-viewport" id="mapViewport"><div id="mapTiles" class="map-tiles"></div><div class="map-grid"></div><div class="map-player">🦖</div></div>
+      <div class="map-foot">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors <span id="mapMeters">1 клетка ≈ 18 м</span></div>
+    </section>
+    <button class="open-code-button" id="openCodeButton">🐍 НАПИСАТЬ КОД <span>→</span></button>
+    <section class="editor-panel hidden" id="editorPanel" aria-label="Редактор Python">
+      <div class="editor-grip" aria-hidden="true"></div>
+      <div class="editor-head"><div class="eyebrow">🐍 PYTHON · МИССИЯ <span id="missionOrdinal">01</span></div><button class="icon-button" id="closeEditor" aria-label="Закрыть редактор">✕</button></div>
+      <h1 id="missionTitle">Первая команда</h1>
+      <div class="mission-sub" id="missionTopic">Команды и последовательность</div>
+      <div class="mission-story" id="missionStory"></div>
+      <div class="task-line"><span>🎯</span><span id="missionTask"></span></div>
+      <div class="editor-title"><div><span class="code-dot"></span> <strong>main.py</strong><span class="editor-lang">Python 3</span></div><span id="pythonStatus" class="python-status">Подключаем Python…</span></div>
+      <div class="code-shell"><div class="line-gutter" id="lineGutter">1<br>2<br>3<br>4<br>5</div><textarea id="codeInput" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Напиши код Python"></textarea></div>
+      <div class="editor-actions"><button id="runButton" class="primary-button">▶ Запустить код</button><button id="resetButton" class="outline-button" title="Вернуть начало">↺</button></div>
+      <div class="feedback" id="feedback" role="status"><span>💡</span><p>Напиши команды и нажми «Запустить код».</p></div>
+      <div class="editor-tools"><button id="hintButton">💡 Подсказка</button><button id="solutionButton">👀 Решение</button><button id="backToHub">🌍 На карту</button></div>
+      <div class="editor-foot">Настоящий CPython (Pyodide) · Работает в браузере · Для запуска нужен интернет</div>
+    </section>
+    <div class="code-controls" id="codeControls"><span>🎮 Управление миром — командами Python</span><div><code>move_forward()</code><code>turn_left()</code><code>collect()</code></div></div>
+    <div id="toast" class="toast hidden" role="status"></div>
+    <div id="intro" class="modal-wrap">
+      <div class="intro-card">
+        <span class="intro-star">✦ НОВОЕ ПРИКЛЮЧЕНИЕ ✦</span>
+        <div class="intro-mascot" aria-hidden="true">🦖</div>
+        <h2>Добро пожаловать в<br><em>Codecraft!</em></h2>
+        <p>Твой мир. Твои правила. Твой <strong>Python.</strong><br>Путешествуй по настоящей карте Земли, представленной кубиками, и двигайся только с помощью кода.</p>
+        <div class="intro-benefits"><span>🌍 Реальная карта</span><span>🐍 Python</span><span>💎 4 миссии</span></div>
+        <button class="primary-button huge" id="startButton">🚀 Начать приключение <span>→</span></button>
+        <button class="plain-button" id="exploreButton">Посмотреть карту</button>
+      </div>
+    </div>
+    <div id="victory" class="modal-wrap hidden"><div class="win-card"><div class="win-icon">🏆</div><div class="eyebrow">МИССИЯ ВЫПОЛНЕНА!</div><h2>Код работает! 🎉</h2><p id="victoryText">Ты прошёл испытание!</p><div class="win-reward" id="victoryReward">+50 💎</div><button class="primary-button huge" id="nextButton">Следующая миссия →</button><button class="plain-button" id="victoryExplore">Продолжить исследование</button></div></div>
+    <div id="searchModal" class="modal-wrap hidden"><div class="help-card"><button class="icon-button help-close" id="searchClose">✕</button><h2>🌍 Куда отправимся?</h2><p>Найди город, парк или адрес. Игра переместится на новую часть реальной карты. Это игровое перемещение — GPS устройства мы не используем.</p><form id="placeForm" class="place-form"><input id="placeInput" type="search" placeholder="Например, Москва, Зарядье" required autocomplete="off"><button type="submit" class="primary-button">Найти</button></form><div class="place-presets"><button data-place="55.7517,37.6287">Москва</button><button data-place="59.9391,30.3158">Петербург</button><button data-place="55.7985,49.1063">Казань</button><button data-place="48.8584,2.2945">Париж</button></div><p class="search-message" id="searchMessage"></p></div></div>
+    <div id="helpModal" class="modal-wrap hidden"><div class="help-card"><button class="icon-button help-close" id="helpClose">✕</button><h2>Как играть 🎮</h2><p><strong>На iPad:</strong> нажми «Написать код», введи Python и запускай. Команды двигают Данчезавра по клеткам настоящей карты. Поворот камеры: проведи пальцем по 3D-миру.</p><p><strong>На компьютере:</strong> тоже управляй с помощью Python. Мышью можно только поворачивать камеру.</p><p><strong>Python:</strong> открой миссию, напиши команды в редакторе, запусти код и посмотри, что сделал герой. Отступы после <code>for</code> и <code>if</code> важны!</p><button class="primary-button" id="helpOk">Понятно!</button></div></div>
+  </main>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
