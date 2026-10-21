@@ -55,3 +55,18 @@
 .panorama-place a.unavailable{pointer-events:none;opacity:.42;filter:grayscale(.8);cursor:not-allowed}
 .panorama-note{font-size:12px;color:#b3cbd3;line-height:1.5}
 @media(max-width:720px){.panorama-card{padding:15px}.panorama-place{padding:10px}.panorama-place a{font-size:11px}.journey-buttons #openPanoramaButton{background:#487762;color:#fff8dc}}
+
+/* v0.7 street missions */
+.street-quest{position:absolute;z-index:8;top:315px;left:290px;width:385px;display:flex;flex-direction:column;gap:8px;background:rgba(15,30,44,.93);border:1px solid rgba(120,226,197,.5);padding:14px 15px;border-radius:17px;box-shadow:0 14px 44px #05111d99;backdrop-filter:blur(12px)}
+.street-quest-heading{display:flex;justify-content:space-between;align-items:center;color:#a6efd5;font-size:12px}
+.street-quest-heading span{border:1px solid #84d8b94b;border-radius:7px;padding:3px 7px;background:#2c51477a}
+.street-quest-title{font-weight:900;font-size:16px;color:#fff7d7;line-height:1.2}
+.street-quest p{font-size:12px;margin:0;line-height:1.45;color:#d4e8f3}
+.street-instruction{background:#0b2833;display:flex;gap:8px;padding:7px 9px;border-radius:9px;color:#81f4b7;font:12px ui-monospace,monospace;line-height:1.5}
+.street-quest button{color:#f9fffd;background:#255e5f;border:1px solid #6ca69b;border-radius:9px;padding:8px 10px;font-size:12px;align-self:flex-start}
+.street-quest button:disabled{opacity:.5;cursor:default}
+.street-quest small{font-size:10px;color:#94bcbd;line-height:1.35}
+.map-street{position:absolute;z-index:5;font-size:22px;pointer-events:none;filter:drop-shadow(0 0 4px #56f8d6);transform:translate(-50%,-50%)}
+@media(min-width:761px) and (max-width:1100px){.street-quest{left:230px;top:312px;width:360px}}
+@media(max-width:760px){.street-quest{left:8px;top:calc(334px + env(safe-area-inset-top));width:min(275px,calc(100vw - 20px));padding:9px;gap:5px}.street-quest-heading{font-size:10px}.street-quest-title{font-size:12px}.street-quest p{font-size:10px}.street-instruction{font-size:10px}.street-quest button{font-size:10px;padding:6px 8px}.street-quest small{display:none}}
+@media(orientation:landscape) and (max-height:650px){.street-quest{top:auto;bottom:70px;left:10px;width:240px;max-height:155px;overflow:auto;gap:4px}.street-quest small{display:none}}

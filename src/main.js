@@ -2,6 +2,7 @@ import { GeoVoxelGame, parseOSM, gridToLatLon, toGrid, GRID_METERS } from './geo
 import { LEVELS, STORAGE_KEY } from './levels.js';
 import { FIRST_JOURNEY, resolveGoal, directionToCell, finishedGoal, metersApart } from './route.js';
 import { panoramaUrl, mapUrl } from './panorama.js';
+import { STREET_QUESTS, planStreetQuest, evaluateStreetQuest, reachableCells, sameCell, streetHint } from './street-quests.js';
 
 const $ = id => document.getElementById(id);
 const game = new GeoVoxelGame($('game'));
@@ -19,11 +20,16 @@ let codeDrafts = saved?.codeDrafts && typeof saved.codeDrafts==='object' ? saved
 let goalCoords = Array.isArray(saved?.goalCoords) && saved.goalCoords.length===2 && saved.goalVerified===true ? saved.goalCoords : null;
 let goalCell = goalCoords ? toGrid(...goalCoords) : null;
 let questTurn=0, questMoves=0;
+let streetProgress=Number.isInteger(saved?.streetProgress)?Math.min(STREET_QUESTS.length,Math.max(0,saved.streetProgress)):0;
+let streetQuest=null;
+let previousStreetTarget=Array.isArray(saved?.streetPrevious)?saved.streetPrevious:null;
+let restoredStreetTarget=Array.isArray(saved?.streetTarget)?saved.streetTarget:null;
+
 
 
 function save(){
   try {localStorage.setItem(STORAGE_KEY, JSON.stringify({place,completed,coins, position:game.playerGlobal,heading:game.heading,crystalTaken:game.crystalTaken,bridgeBuilt:game.bridgeBuilt,
-    goalCoords,goalVerified:!!goalCoords,codeDrafts}));}
+    goalCoords,goalVerified:!!goalCoords,codeDrafts,streetProgress,streetTarget:streetQuest?.target || null,streetPrevious:previousStreetTarget}));}
   catch (_) {}
 }
 function showToast(msg){
@@ -35,6 +41,54 @@ function feedback(msg,kind='info'){
   const span=document.createElement('span');span.textContent=kind==='good'?'✅':kind==='bad'?'⚠️':'💡';
   const p=document.createElement('p');p.textContent=msg;el.replaceChildren(span,p);
 }
+// A separate in-world mission system: educational objects, NEVER real deliveries.
+function reachableStreetTarget(target){
+  if(!target||!game.playerGlobal||!Array.isArray(target)||target.length!==2)return false;
+  return reachableCells((x,z)=>game.cell(x,z),game.playerGlobal,12).some(c=>sameCell(c.position,target));
+}
+function setStreetStage(reuse=false){
+  if(streetProgress>=STREET_QUESTS.length){streetQuest=null;game.setStreetWaypoint(null);updateStreetUI();return;}
+  let q=null;
+  if(reuse&&restoredStreetTarget&&reachableStreetTarget(restoredStreetTarget)){
+    q={stage:streetProgress,target:[...restoredStreetTarget],kind:STREET_QUESTS[streetProgress].id,
+      generic:streetProgress>0&&![[1,0],[0,1],[-1,0],[0,-1]].some(([dx,dz])=>game.cell(restoredStreetTarget[0]+dx,restoredStreetTarget[1]+dz).type==='building')};
+  }
+  streetQuest=q||planStreetQuest((x,z)=>game.cell(x,z),game.playerGlobal,streetProgress,previousStreetTarget);
+  restoredStreetTarget=null;
+  game.setStreetWaypoint(streetQuest);
+  updateStreetUI();save();
+}
+function updateStreetUI(){
+  const finished=streetProgress>=STREET_QUESTS.length;
+  $('streetCount').textContent=`${streetProgress} / ${STREET_QUESTS.length}`;
+  $('streetTitle').textContent=finished?'🎉 Все городские квесты пройдены!':STREET_QUESTS[streetProgress].icon+' '+STREET_QUESTS[streetProgress].name;
+  $('streetDescription').textContent=finished?'Подарок для бабушки собран. Продолжай путешествие к дому бабушки по своему маршруту.':
+    streetQuest ? (streetQuest.generic && streetProgress>0?'На этом участке пока нет подходящего здания. Иди к игровому ориентиру.':STREET_QUESTS[streetProgress].story):
+    'Не удалось построить доступный путь. Попробуй загрузить другой участок карты.';
+  $('streetInstruction').textContent=finished?'Отлично! Все награды получены.':
+    streetQuest?STREET_QUESTS[streetProgress].command:'Нужны свободные клетки вокруг героя';
+  $('streetHintButton').disabled=finished||!streetQuest;
+  $('mapStreet').classList.toggle('hidden',!streetQuest);
+}
+function checkStreetQuest(actions){
+  if(!evaluateStreetQuest(streetQuest,actions))return;
+  const quest=STREET_QUESTS[streetProgress];
+  previousStreetTarget=streetQuest.target;
+  coins+=quest.reward;
+  streetProgress++;
+  setStreetStage(false);
+  renderQuests();
+  updateMap();
+  save();
+  showToast(`🏙 ${quest.name}: выполнено! +${quest.reward} 💎`);
+  feedback(`Городская миссия выполнена: ${quest.name}. +${quest.reward} кристаллов!`,'good');
+}
+$('streetHintButton').addEventListener('click',()=>{
+  feedback(streetProgress>=STREET_QUESTS.length?'Все городские задания пройдены!':
+    streetHint(streetQuest,game.playerGlobal),'info');
+  openEditor();
+});
+
 function renderQuests(){
   $('progressCount').textContent=`${completed.length} / ${LEVELS.length}`;
   $('coinCount').textContent=coins;
@@ -159,7 +213,7 @@ $('retryGoal').addEventListener('click',()=>{void loadGoal();});
 $('restartJourney').addEventListener('click',async()=>{
   if(busy)return;
   if(!window.confirm('Начать путешествие из дома заново? Сбросится прохождение, но не уроки и код.'))return;
-  completed=[];coins=0;selected=0;codeDrafts={};
+  completed=[];coins=0;selected=0;codeDrafts={};streetProgress=0;streetQuest=null;previousStreetTarget=null;restoredStreetTarget=null;
   await goToPlace(...HOME,true);game.goalGlobal=goalCell;
   updateQuest();updateGoalUI();showToast('Ты вернулся на Народного Ополчения, 12к4');
 });
@@ -192,7 +246,7 @@ function onWorkerMessage({data}){
     toggleBusy(false);
     if(data.print?.trim())feedback(`Вывод программы: ${data.print.trim()}`,'info');
     else feedback(steps.length?`Готово! Выполнено действий: ${steps.length}.`:'Код выполнен, но персонаж остался на месте.','good');
-    checkQuest(steps,$('codeInput').value);updateMap();save();
+    checkQuest(steps,$('codeInput').value);checkStreetQuest(steps);updateMap();save();
   });
 }
 async function animateActions(actions){
@@ -299,6 +353,14 @@ function updateMap(){
   $('mapViewport').style.setProperty('--cell-size',`${spacing}px`);
   $('mapViewport').style.setProperty('--cell-offset-x',`${((spacing/2-worldX%spacing)%spacing+spacing)%spacing}px`);
   $('mapViewport').style.setProperty('--cell-offset-y',`${((spacing/2-worldY%spacing)%spacing+spacing)%spacing}px`);
+  const street=$('mapStreet');
+  if(streetQuest){
+    const [markLat,markLon]=gridToLatLon(...streetQuest.target);
+    const [markerWX,markerWY]=slippy(markLat,markLon,zoom);
+    const sl=width/2+markerWX-worldX,st=height/2+markerWY-worldY;
+    street.style.left=`${sl}px`;street.style.top=`${st}px`;
+    street.classList.toggle('hidden',sl<12||sl>width-12||st<12||st>height-12);
+  }else street.classList.add('hidden');
   const goal=$('mapGoal');
   if(goalCoords){
     const [goalWX,goalWY]=slippy(...goalCoords,zoom);
@@ -340,11 +402,13 @@ async function maybeLoadRealWorld(force=false){
     const features=parseOSM(json.elements||[]);
     if(!features.length)throw new Error('На участке нет доступных объектов');
     game.setFeatures(features,'osm');
+    setStreetStage(true);
     $('geoStatus').textContent=`3D из OpenStreetMap · объектов: ${features.length}`;
     updateMap();
   }catch(e){
     if(currentID!==fetchID)return;
     game.setFeatures([],'stylized');
+    setStreetStage(true);
     $('geoStatus').textContent='3D-деморежим · карта OSM доступна отдельно';
     console.warn('OpenStreetMap 3D import unavailable',e);
   }finally{clearTimeout(timer);}
@@ -353,7 +417,7 @@ async function maybeLoadRealWorld(force=false){
 async function goToPlace(lat,lon,reset=true){
   place=[lat,lon];fetchID++;fetchCenter=null;
   game.setPlace(lat,lon);game.goalGlobal=goalCell;
-  if(reset){completed=[];coins=0;selected=0;updateQuest();}
+  if(reset){completed=[];coins=0;selected=0;streetProgress=0;streetQuest=null;previousStreetTarget=null;restoredStreetTarget=null;updateQuest();}
   else{
     game.playerGlobal=saved?.position?.length===2?saved.position:[...game.spawn];
     game.heading=Number.isInteger(saved?.heading)?saved.heading:3;
@@ -361,7 +425,7 @@ async function goToPlace(lat,lon,reset=true){
     game.bridgeBuilt=Boolean(saved?.bridgeBuilt);
     game.geoCenter=[...game.playerGlobal];game.rebuild();updateQuest();
   }
-  updateMap();save();
+  setStreetStage(!reset);updateMap();save();
   await maybeLoadRealWorld(true);
 }
 $('changePlaceButton').addEventListener('click',()=>{$('searchModal').classList.remove('hidden');});

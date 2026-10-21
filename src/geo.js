@@ -42,13 +42,13 @@ export class GeoVoxelGame extends VoxelGame {
     super(canvas);
     this.mode='geo';this.geoCenter=[0,0];this.geoFeatures=[];this.dataMode='stylized';this.geoTiles=new Map();
     this.progress={completed:[],coins:0};this.spawn=[0,0];this.heading=3;this.bridgeBuilt=false;this.crystalTaken=false;
-    this.goalGlobal=null;this.goalReached=false;
+    this.goalGlobal=null;this.goalReached=false;this.streetWaypoint=null;
     this.player={x:0,z:0,facing:3,yaw:this.facingYaw(3),jump:0};this.camYaw=.56;
   }
   setPlace(lat,lon){
     const g=toGrid(lat,lon);this.spawn=[...g];this.playerGlobal=[...g];this.heading=3;
     this.geoCenter=[...g];this.geoFeatures=[];this.geoTiles.clear();this.dataMode='stylized';
-    this.bridgeBuilt=false;this.crystalTaken=false;this.player.facing=3;this.player.yaw=this.facingYaw(3);
+    this.bridgeBuilt=false;this.crystalTaken=false;this.streetWaypoint=null;this.player.facing=3;this.player.yaw=this.facingYaw(3);
     this.rebuild();
   }
   setFeatures(features, mode){this.geoFeatures=features;this.dataMode=mode;this.geoTiles.clear();this.rebuild();}
@@ -260,6 +260,23 @@ export class GeoVoxelGame extends VoxelGame {
   }
   makeDynamic(t){
     const m=new Mesh();this.makeCharacter(m,this.player.x,this.player.z,this.player.yaw,t);
+    if(this.streetWaypoint){
+      const [cx,cz]=this.geoCenter,[gx,gz]=this.streetWaypoint.target;
+      const x=gx-cx,z=gz-cz;
+      if(Math.abs(x)<=HALF&&Math.abs(z)<=HALF){
+        const pack=this.streetWaypoint.stage===2;
+        const height=.92+Math.sin(t*3)*.17;
+        if(pack){
+          m.box(x,.34,z,.65,.54,.65,'#d7a052');
+          m.box(x,.62,z,.69,.12,.69,'#f1d18b');
+          m.box(x,.66,z,.12,.10,.70,'#60e9b2');
+        }else{
+          m.box(x,.06,z,.90,.12,.90,this.streetWaypoint.stage===0?'#48cbee':'#ffd276');
+          m.box(x,height,z,.19,1.5,.19,this.streetWaypoint.stage===0?'#55e8ff':'#ffda75',t*.18);
+          m.box(x,height+.85,z,.65,.55,.65,this.streetWaypoint.stage===0?'#8aeeff':'#ffe5a1',t*.5);
+        }
+      }
+    }
     if(this.goalGlobal){
       const [cx,cz]=this.geoCenter,x=this.goalGlobal[0]-cx,z=this.goalGlobal[1]-cz;
       if(Math.abs(x)<HALF&&Math.abs(z)<HALF){
@@ -272,7 +289,8 @@ export class GeoVoxelGame extends VoxelGame {
     return m;
   }
   getSnapshot(){const {obstacles,water}=this.obstaclesAround(19);return {origin:[...this.playerGlobal],facing:this.heading,obstacles,water,
-      crystal:[],bridgeCell:[this.spawn[0],this.spawn[1]-5], bridgeBuilt:this.bridgeBuilt,maxRange:15,boards:3};}
+      crystal:this.streetWaypoint?.stage===2?[this.streetWaypoint.target]:[],bridgeCell:[this.spawn[0],this.spawn[1]-5], bridgeBuilt:this.bridgeBuilt,maxRange:15,boards:3};}
   setGoal(cell){this.goalGlobal=cell;this.goalReached=false;}
+  setStreetWaypoint(quest){this.streetWaypoint=quest?{stage:quest.stage,target:[...quest.target]}:null;}
   nearRefresh(){return Math.max(Math.abs(this.playerGlobal[0]-this.geoCenter[0]),Math.abs(this.playerGlobal[1]-this.geoCenter[1]))>=8;}
 }
